@@ -2081,8 +2081,6 @@
         document.querySelectorAll('.page.active .reveal').forEach(el => el.classList.add('in-view'));
       }
       navButtons.forEach(btn => btn.addEventListener('click', () => showPage(btn.dataset.page)));
-      const footYear = document.getElementById('foot-year');
-      if (footYear) footYear.textContent = 'Generated ' + new Date().toISOString().slice(0, 10);
 
       // ---------------- REVEAL ANIMATION ----------------
       function setupReveal() {
