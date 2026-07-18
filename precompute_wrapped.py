@@ -90,12 +90,22 @@ yearly = df.groupby("year")["minutes_played"].sum() / 60
 yearly_hours = [{"year": int(y), "hours": round(h, 1)} for y, h in yearly.items()]
 
 # ------------------------------------------------------------------
-# 5. BEHAVIOUR HEATMAP (day x hour, minutes played)
+# 5. USER BEHAVIOUR -- one continuous line across the full week
+#    (Monday 00:00 -> Sunday 23:00, 168 points, raw play counts,
+#    matching the single-line/filled-area style of the reference chart)
 # ------------------------------------------------------------------
 day_order = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-pivot = df.pivot_table(index="day_of_week", columns="hour", values="minutes_played",
-                        aggfunc="sum", fill_value=0).reindex(day_order)
-heatmap = {"days": day_order, "hours": list(range(24)), "matrix": pivot.values.round(1).tolist()}
+play_counts = df.groupby(["day_of_week", "hour"]).size().reindex(
+    pd.MultiIndex.from_product([day_order, range(24)], names=["day_of_week", "hour"]),
+    fill_value=0
+)
+
+weekly_rhythm = {
+    "labels": [f"{d[:3]} {h:02d}:00" for d, h in play_counts.index],
+    "plays": [int(v) for v in play_counts.values],
+    "day_names": day_order,
+    "day_start_index": [i * 24 for i in range(7)],  # index where each day begins, for gridlines
+}
 
 # ------------------------------------------------------------------
 # 6. LISTENING PERSONA (rule-based, computed from real behaviour)
@@ -157,24 +167,39 @@ persona = {
 #    a real cross-platform stream count, since this dataset is a single
 #    listener's history. See write-up for the assumption this makes.
 # ------------------------------------------------------------------
-unlock_candidates = [
-    {
-        "artist": row["artist_name"],
+import hashlib
+
+def promo_code(artist, album):
+    """Deterministic 6-char alphanumeric code, unique per artist+album."""
+    h = hashlib.sha256(f"BUGBYTES|{artist}|{album}".encode()).hexdigest()
+    alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"  # no 0/O/1/I ambiguity
+    n = int(h[:12], 16)
+    code = ""
+    for _ in range(6):
+        code += alphabet[n % len(alphabet)]
+        n //= len(alphabet)
+    return code
+
+unlock_candidates = []
+for _, row in agg[agg["total_plays"] >= 300].sort_values("total_plays", ascending=False).head(12).iterrows():
+    artist_name = row["artist_name"]
+    artist_albums = (
+        df[df["artist_name"] == artist_name]
+        .groupby("album_name")["minutes_played"].sum()
+        .sort_values(ascending=False)
+        .head(4)
+    )
+    albums_with_codes = [
+        {"album": album, "hours": round(minutes / 60, 1), "promo_code": promo_code(artist_name, album)}
+        for album, minutes in artist_albums.items()
+    ]
+    unlock_candidates.append({
+        "artist": artist_name,
         "plays": int(row["total_plays"]),
         "hours": round(row["total_minutes"] / 60, 1),
-    }
-    for _, row in agg[agg["total_plays"] >= 300].sort_values("total_plays", ascending=False).head(12).iterrows()
-]
+        "albums": albums_with_codes,
+    })
 
-# Mock merch/ticket/recommendation copy -- clearly placeholder content,
-# templated per real top-artist names (no real product/tour data exists).
-MOCK_ITEMS = ["Live Session Vinyl (Ltd. Edition)", "Front-Row Digital Meet & Greet",
-              "Tour Poster Print, Signed", "Early-Access Ticket Window"]
-
-merch_mock = {
-    row["artist"]: [f"{row['artist']} — {item}" for item in MOCK_ITEMS[:2]]
-    for row in unlock_candidates
-}
 
 # ------------------------------------------------------------------
 # 8. REAL "listeners of X also played Y" -- same-day co-occurrence
@@ -197,10 +222,9 @@ data = {
     "top_tracks": top_tracks,
     "top_albums": top_albums,
     "yearly_hours": yearly_hours,
-    "heatmap": heatmap,
+    "weekly_rhythm": weekly_rhythm,
     "persona": persona,
     "unlock_candidates": unlock_candidates,
-    "merch_mock": merch_mock,
     "co_occurrence": co_occurrence,
 }
 
@@ -209,4 +233,5 @@ with open("/home/claude/wrapped_data.json", "w") as f:
 
 print("Persona:", persona["primary"]["name"], "+", persona["secondary"]["name"] if persona["secondary"] else None)
 print("JSON size (KB):", round(len(json.dumps(data)) / 1024, 1))
-print("Top artist for unlock demo:", unlock_candidates[0])
+print("Top artist for unlock demo:", unlock_candidates[0]["artist"], unlock_candidates[0]["plays"])
+print("Sample album promo codes:", unlock_candidates[0]["albums"])
