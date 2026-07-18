@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Echoprint — Your Listening, Decoded</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:        #F6F7F0;
+    --sage-mid:  #8C9668;
+    --sage-dark: #4B5233;
+    --ink:       #2E3320;
+    --peach:     #E8A07C;
+    --paper:     #FFFFFF;
+    --line:      rgba(46,51,32,0.14);
+    --shadow:    0 12px 32px rgba(46,51,32,0.10);
+    --radius:    14px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{
+    font-family:'Fraunces',serif;
+    font-weight:700;
+    letter-spacing:-0.01em;
+    margin:0;
+  }
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  a{color:inherit;}
+  ::selection{background:var(--sage-mid);color:var(--bg);}
+  :focus-visible{outline:2px solid var(--sage-dark);outline-offset:3px;}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important;transition:none !important;}
+  }
+
+  /* ---------- LANDING ---------- */
+  #landing{
+    min-height:100svh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:2rem;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+  }
+  #landing::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(140,150,104,0.16) 0%, transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(232,160,124,0.18) 0%, transparent 45%);
+    pointer-events:none;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.72rem;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--sage-dark);
+    opacity:0.75;
+    margin-bottom:1rem;
+  }
+  .logo{
+    font-size:clamp(2.6rem,7vw,4.6rem);
+    line-height:0.95;
+    margin-bottom:0.6rem;
+  }
+  .logo em{
+    font-style:italic;
+    color:var(--sage-dark);
+  }
+  .tagline{
+    max-width:34rem;
+    font-size:1.05rem;
+    color:var(--ink);
+    opacity:0.72;
+    margin-bottom:2.4rem;
+  }
+  #name-form{
+    display:flex;
+    gap:0.6rem;
+    flex-wrap:wrap;
+    justify-content:center;
+    position:relative;
+    z-index:1;
+  }
+  #name-input{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:1rem;
+    padding:0.9rem 1.1rem;
+    border:1.5px solid var(--sage-dark);
+    border-radius:8px;
+    background:var(--paper);
+    color:var(--ink);
+    width:16rem;
+    max-width:60vw;
+  }
+  #name-input::placeholder{color:rgba(46,51,32,0.4);}
+  .btn{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.92rem;
+    font-weight:600;
+    padding:0.9rem 1.5rem;
+    border-radius:8px;
+    border:none;
+    background:var(--sage-dark);
+    color:var(--bg);
+    cursor:pointer;
+    transition:transform 0.15s ease, background 0.15s ease;
+  }
+  .btn:hover{background:var(--ink);transform:translateY(-1px);}
+  .btn:active{transform:translateY(0);}
+  .btn.secondary{
+    background:transparent;
+    border:1.5px solid var(--sage-dark);
+    color:var(--sage-dark);
+  }
+  .btn.secondary:hover{background:rgba(140,150,104,0.12);}
+  #name-error{
+    color:#a14545;
+    font-size:0.82rem;
+    margin-top:0.6rem;
+    min-height:1.2em;
+    font-family:'IBM Plex Mono',monospace;
+  }
+  .scroll-hint{
+    position:absolute;
+    bottom:2rem;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.7rem;
+    letter-spacing:0.1em;
+    color:var(--sage-dark);
+    opacity:0.6;
+  }
+
+  /* ---------- MAIN APP ---------- */
+  #app{display:none;}
+  #app.visible{display:block;}
+
+  nav.topbar{
+    position:sticky;
+    top:0;
+    z-index:20;
+    background:rgba(246,247,240,0.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);
+    padding:0.9rem 1.5rem;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  nav.topbar .brand{font-family:'Fraunces',serif;font-weight:700;font-size:1.1rem;}
+  nav.topbar .brand em{font-style:italic;color:var(--sage-dark);}
+  nav.topbar .who{font-family:'IBM Plex Mono',monospace;font-size:0.78rem;opacity:0.7;}
+
+  section{
+    max-width:64rem;
+    margin:0 auto;
+    padding:4.5rem 1.5rem;
+  }
+  section.tight{padding-top:2rem;padding-bottom:2rem;}
+  .section-label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.72rem;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--sage-dark);
+    margin-bottom:0.8rem;
+    display:block;
+  }
+  .section-title{
+    font-size:clamp(1.6rem,4vw,2.3rem);
+    margin-bottom:0.6rem;
+  }
+  .section-sub{
+    max-width:38rem;
+    opacity:0.72;
+    margin-bottom:2.2rem;
+    line-height:1.55;
+  }
+
+  /* ---------- HERO / WRAP UP ---------- */
+  #hero{padding-top:3.5rem;}
+  .hero-number{
+    font-family:'Fraunces',serif;
+    font-weight:700;
+    font-size:clamp(3rem,11vw,6.5rem);
+    line-height:0.92;
+    color:var(--sage-dark);
+  }
+  .hero-copy{font-size:1.25rem;max-width:36rem;margin-top:1rem;line-height:1.5;}
+  .stat-row{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(9.5rem,1fr));
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    overflow:hidden;
+    margin-top:2.5rem;
+  }
+  .stat-cell{
+    background:var(--paper);
+    padding:1.3rem 1.2rem;
+  }
+  .stat-cell .num{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:1.5rem;
+    font-weight:600;
+    color:var(--ink);
+  }
+  .stat-cell .lbl{
+    font-size:0.78rem;
+    opacity:0.62;
+    margin-top:0.2rem;
+  }
+
+  /* ---------- PERSONA TICKET STUB ---------- */
+  .ticket{
+    position:relative;
+    background:var(--sage-dark);
+    color:var(--bg);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    display:grid;
+    grid-template-columns:1fr auto;
+    overflow:hidden;
+  }
+  .ticket-main{padding:2.2rem 2rem;}
+  .ticket-stub{
+    padding:2.2rem 1.6rem;
+    border-left:2px dashed rgba(246,247,240,0.35);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    min-width:9rem;
+    text-align:center;
+    background:rgba(0,0,0,0.08);
+  }
+  .ticket .eyebrow-light{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.7rem;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    opacity:0.65;
+    margin-bottom:0.5rem;
+  }
+  .persona-name{
+    font-family:'Fraunces',serif;
+    font-weight:700;
+    font-style:italic;
+    font-size:clamp(1.8rem,4.5vw,2.6rem);
+    margin-bottom:0.6rem;
+  }
+  .persona-sub{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.85rem;
+    opacity:0.85;
+    line-height:1.5;
+    max-width:28rem;
+  }
+  .persona-secondary{
+    display:inline-block;
+    margin-top:1rem;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.72rem;
+    letter-spacing:0.06em;
+    padding:0.35rem 0.7rem;
+    border:1px solid rgba(246,247,240,0.4);
+    border-radius:999px;
+  }
+  .ticket-stub .mono{font-size:0.68rem;opacity:0.7;letter-spacing:0.08em;}
+  .ticket-stub .big-id{font-family:'IBM Plex Mono',monospace;font-size:1rem;font-weight:600;margin:0.4rem 0;}
+
+  /* ---------- CHARTS ---------- */
+  .chart-card{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:1.6rem 1.6rem 1.2rem;
+    box-shadow:var(--shadow);
+  }
+  .bar-row{
+    display:grid;
+    grid-template-columns:9.5rem 1fr 3.2rem;
+    align-items:center;
+    gap:0.8rem;
+    padding:0.55rem 0;
+    border-bottom:1px solid var(--line);
+    font-size:0.86rem;
+  }
+  .bar-row:last-child{border-bottom:none;}
+  .bar-rank{
+    font-family:'IBM Plex Mono',monospace;
+    color:var(--sage-dark);
+    font-size:0.75rem;
+  }
+  .bar-name{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .bar-track{
+    height:0.85rem;
+    background:rgba(140,150,104,0.16);
+    border-radius:4px;
+    overflow:hidden;
+  }
+  .bar-fill{
+    height:100%;
+    background:linear-gradient(90deg,var(--sage-mid),var(--sage-dark));
+    border-radius:4px;
+    transition:width 0.9s cubic-bezier(.2,.8,.2,1);
+    width:0;
+  }
+  .bar-score{
+    font-family:'IBM Plex Mono',monospace;
+    text-align:right;
+    color:var(--ink);
+    font-weight:600;
+  }
+
+  .yearly-chart{display:flex;align-items:flex-end;gap:0.6rem;height:14rem;padding-top:1rem;}
+  .year-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;}
+  .year-bar{
+    width:100%;
+    max-width:2.6rem;
+    background:linear-gradient(180deg,var(--peach),var(--sage-dark));
+    border-radius:5px 5px 2px 2px;
+    transition:height 1s cubic-bezier(.2,.8,.2,1);
+    height:0;
+  }
+  .year-val{font-family:'IBM Plex Mono',monospace;font-size:0.68rem;margin-top:0.4rem;color:var(--ink);opacity:0.75;}
+  .year-lbl{font-family:'IBM Plex Mono',monospace;font-size:0.68rem;margin-top:0.2rem;color:var(--sage-dark);}
+
+  .heatmap-wrap{overflow-x:auto;padding-bottom:0.4rem;}
+  .heatmap{display:grid;grid-template-columns:3.4rem repeat(24,minmax(1.5rem,1fr));gap:2px;min-width:38rem;}
+  .heatmap .hcell{
+    aspect-ratio:1;
+    border-radius:3px;
+  }
+  .heatmap .hlabel{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.62rem;
+    color:var(--ink);
+    opacity:0.7;
+    display:flex;
+    align-items:center;
+  }
+  .heatmap .hourlabel{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.55rem;
+    color:var(--ink);
+    opacity:0.55;
+    text-align:center;
+  }
+  .legend{display:flex;align-items:center;gap:0.5rem;margin-top:0.9rem;font-family:'IBM Plex Mono',monospace;font-size:0.68rem;opacity:0.7;}
+  .legend-swatch{width:10px;height:10px;border-radius:2px;}
+
+  /* ---------- PROFILE LISTS ---------- */
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+  @media (max-width:44rem){.two-col{grid-template-columns:1fr;}}
+  .list-item{
+    display:flex;
+    justify-content:space-between;
+    gap:1rem;
+    padding:0.6rem 0;
+    border-bottom:1px solid var(--line);
+    font-size:0.88rem;
+  }
+  .list-item:last-child{border-bottom:none;}
+  .list-item .name{font-weight:600;}
+  .list-item .sub{opacity:0.6;font-size:0.8rem;}
+  .list-item .val{font-family:'IBM Plex Mono',monospace;color:var(--sage-dark);white-space:nowrap;}
+
+  .note{
+    background:rgba(140,150,104,0.12);
+    border:1px solid rgba(140,150,104,0.3);
+    border-radius:10px;
+    padding:0.9rem 1.1rem;
+    font-size:0.82rem;
+    line-height:1.5;
+    margin-top:1.5rem;
+  }
+  .note strong{color:var(--sage-dark);}
+
+  /* ---------- UNLOCK SECTION ---------- */
+  .unlock-card{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:1.8rem;
+  }
+  .slider-row{display:flex;align-items:center;gap:1rem;margin-bottom:1.6rem;flex-wrap:wrap;}
+  .slider-row label{font-family:'IBM Plex Mono',monospace;font-size:0.8rem;opacity:0.75;}
+  input[type=range]{
+    flex:1;
+    min-width:12rem;
+    accent-color:var(--sage-dark);
+  }
+  #threshold-val{
+    font-family:'IBM Plex Mono',monospace;
+    font-weight:600;
+    color:var(--sage-dark);
+    min-width:5.5rem;
+    text-align:right;
+  }
+  .unlock-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(15rem,1fr));gap:1rem;}
+  .artist-card{
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:1rem 1.1rem;
+    position:relative;
+  }
+  .artist-card.locked{opacity:0.5;}
+  .artist-card .aname{font-weight:600;margin-bottom:0.2rem;}
+  .artist-card .astat{font-family:'IBM Plex Mono',monospace;font-size:0.76rem;opacity:0.65;}
+  .status-pill{
+    display:inline-block;
+    margin-top:0.7rem;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.68rem;
+    letter-spacing:0.05em;
+    padding:0.25rem 0.6rem;
+    border-radius:999px;
+  }
+  .status-pill.unlocked{background:rgba(140,150,104,0.22);color:var(--sage-dark);}
+  .status-pill.locked{background:rgba(46,51,32,0.08);color:var(--ink);}
+  .merch-list{list-style:none;margin:0.7rem 0 0;padding:0;font-size:0.8rem;}
+  .merch-list li{padding:0.25rem 0;opacity:0.85;}
+  .merch-list li::before{content:"→ ";color:var(--peach);}
+
+  /* ---------- RECS ---------- */
+  .rec-card{
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:1.1rem 1.2rem;
+    background:var(--paper);
+  }
+  .rec-card h4{font-family:'Fraunces',serif;font-size:1.05rem;margin-bottom:0.5rem;}
+  .tag{
+    display:inline-block;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.64rem;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    padding:0.2rem 0.5rem;
+    border-radius:5px;
+    margin-bottom:0.6rem;
+  }
+  .tag.real{background:rgba(140,150,104,0.22);color:var(--sage-dark);}
+  .tag.mock{background:rgba(232,160,124,0.28);color:#8a4b2e;}
+
+  footer{
+    border-top:1px solid var(--line);
+    padding:3rem 1.5rem 4rem;
+    text-align:center;
+  }
+  footer .foot-note{
+    max-width:38rem;
+    margin:0 auto;
+    font-size:0.8rem;
+    opacity:0.6;
+    line-height:1.6;
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================================ -->
+<!-- LANDING SCREEN                                                 -->
+<!-- ============================================================ -->
+<div id="landing">
+  <span class="eyebrow">a data-driven listening portrait</span>
+  <div class="logo">echo<em>print</em></div>
+  <p class="tagline">Eleven years of plays, skips, and 3am replays — turned into a portrait of how you actually listen. Type your name to open your copy.</p>
+  <form id="name-form">
+    <input id="name-input" type="text" placeholder="your name or username" maxlength="24" autocomplete="off">
+    <button type="submit" class="btn">Open my Echoprint →</button>
+  </form>
+  <div id="name-error"></div>
+  <div class="scroll-hint">built from one real listening history · 2013–2024</div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MAIN APP                                                       -->
+<!-- ============================================================ -->
+<div id="app">
+  <nav class="topbar">
+    <div class="brand">echo<em>print</em></div>
+    <div class="who mono" id="nav-who"></div>
+  </nav>
+
+  <!-- HERO / WRAP UP -->
+  <section id="hero">
+    <span class="section-label">Wrap Up</span>
+    <div class="hero-number" id="hero-hours">— hrs</div>
+    <p class="hero-copy" id="hero-copy"></p>
+    <div class="stat-row" id="hero-stats"></div>
+  </section>
+
+  <!-- PERSONA -->
+  <section class="tight">
+    <span class="section-label">Your Listening Persona</span>
+    <div class="ticket">
+      <div class="ticket-main">
+        <div class="eyebrow-light">Primary Trait</div>
+        <div class="persona-name" id="persona-primary">—</div>
+        <div class="persona-sub" id="persona-reason"></div>
+        <div class="persona-secondary" id="persona-secondary" style="display:none;"></div>
+      </div>
+      <div class="ticket-stub">
+        <div class="mono">ECHO-ID</div>
+        <div class="big-id" id="echo-id">····</div>
+        <div class="mono" id="stub-range"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOP ARTISTS -->
+  <section id="top-artists">
+    <span class="section-label">Chart 01</span>
+    <h2 class="section-title">Top 10 Artists, by Engagement Score</h2>
+    <p class="section-sub">Not just play count. Engagement Score blends total listening volume with completion rate, how often tracks were actively chosen (vs. autoplayed), and how rarely they got skipped in the first 30 seconds.</p>
+    <div class="chart-card" id="artist-chart"></div>
+  </section>
+
+  <!-- YEARLY HOURS -->
+  <section id="yearly">
+    <span class="section-label">Chart 02</span>
+    <h2 class="section-title">Yearly Listening Hours</h2>
+    <p class="section-sub">Eleven years, one graph. Every rise and dip below is a real change in a real life.</p>
+    <div class="chart-card">
+      <div class="yearly-chart" id="yearly-chart"></div>
+    </div>
+  </section>
+
+  <!-- BEHAVIOUR HEATMAP -->
+  <section id="behaviour">
+    <span class="section-label">Chart 03</span>
+    <h2 class="section-title">User Behaviour: When You Actually Listen</h2>
+    <p class="section-sub">Minutes played by day of week and hour of day. Darker = more listening happened in that hour.</p>
+    <div class="chart-card">
+      <div class="heatmap-wrap"><div class="heatmap" id="heatmap"></div></div>
+      <div class="legend">
+        <span>Less</span>
+        <span class="legend-swatch" style="background:#F6F7F0;border:1px solid var(--line);"></span>
+        <span class="legend-swatch" style="background:#C7CDA8;"></span>
+        <span class="legend-swatch" style="background:#8C9668;"></span>
+        <span class="legend-swatch" style="background:#4B5233;"></span>
+        <span>More</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- USER PROFILE -->
+  <section id="profile">
+    <span class="section-label">User Profile</span>
+    <h2 class="section-title">Frequent Songs &amp; Albums</h2>
+    <p class="section-sub">Ranked by total minutes played, not just play count — a 20-second clip and a 4-minute listen don't count the same.</p>
+    <div class="two-col">
+      <div class="chart-card">
+        <h3 style="font-size:1rem;margin-bottom:0.8rem;">Top Tracks</h3>
+        <div id="track-list"></div>
+      </div>
+      <div class="chart-card">
+        <h3 style="font-size:1rem;margin-bottom:0.8rem;">Top Albums</h3>
+        <div id="album-list"></div>
+      </div>
+    </div>
+    <div class="note">
+      <strong>Note on genres:</strong> this Spotify export doesn't include genre metadata (that would require a live lookup against Spotify's API for every one of the unique artists here). Artist and album variety above stand in as the taste signal instead.
+    </div>
+  </section>
+
+  <!-- STREAM THRESHOLD UNLOCK -->
+  <section id="unlock">
+    <span class="section-label">Superfan Unlock</span>
+    <h2 class="section-title">Stream Threshold → Exclusive Access</h2>
+    <p class="section-sub">Cross a personal play-count threshold for an artist, and exclusive merch or ticket windows unlock — a mocked version of an artist-collab tier, gated on real listening data.</p>
+    <div class="unlock-card">
+      <div class="slider-row">
+        <label for="threshold-slider">Unlock threshold (plays):</label>
+        <input type="range" id="threshold-slider" min="500" max="15000" step="250" value="5000">
+        <span id="threshold-val" class="mono">5,000 plays</span>
+      </div>
+      <div class="unlock-grid" id="unlock-grid"></div>
+      <div class="note">
+        <strong>Assumption we're making:</strong> the brief's example threshold (30,000 streams) reads like a cross-platform popularity count, not one person's personal play count — no single listener here crosses that alone. We rebuilt it as a <em>personal superfan tier</em> instead: your own play count for an artist unlocks access, which an artist could offer through this platform. Slide the threshold to see it react to real data. No real purchases happen here — every "unlock" is a mock UI state.
+      </div>
+    </div>
+  </section>
+
+  <!-- RECOMMENDATIONS -->
+  <section id="recs">
+    <span class="section-label">Recommendations</span>
+    <h2 class="section-title">What This Might Suggest Next</h2>
+    <p class="section-sub">Two different kinds of "recommendation" are mixed together on purpose below — labeled honestly, not blended.</p>
+    <div class="two-col" id="rec-grid"></div>
+  </section>
+
+  <footer>
+    <p class="foot-note">
+      Echoprint is a hackathon prototype built on one real Spotify export (2013–2024, ~148,700 plays). The name you entered is a label for this session only — it is not stored, and every listener sees the same underlying history. Merch, ticket, and concert content is placeholder copy for demo purposes; the "recommended artists" lists are computed from real same-day co-occurrence in this listening history. Built to prompt a conversation about what a listening history alone reveals — and what it shouldn't be used to decide.
+    </p>
+  </footer>
+</div>
+
+<script id="wrapped-data" type="application/json">
+{"summary": {"total_plays": 148675, "total_hours": 5288.7, "unique_artists": 4113, "unique_tracks": 13839, "unique_albums": 7948, "date_start": "2013-07-08", "date_end": "2024-12-15", "years_covered": 12}, "top_artists": [{"rank": 1, "artist": "The Killers", "plays": 6748, "hours": 286.7, "engagement_score": 78.8, "completion_rate": 57.6}, {"rank": 2, "artist": "The Beatles", "plays": 13530, "hours": 333.2, "engagement_score": 77.6, "completion_rate": 48.5}, {"rank": 3, "artist": "John Mayer", "plays": 4797, "hours": 197.7, "engagement_score": 74.3, "completion_rate": 54.7}, {"rank": 4, "artist": "Howard Shore", "plays": 1445, "hours": 96.9, "engagement_score": 71.1, "completion_rate": 72.2}, {"rank": 5, "artist": "Bob Dylan", "plays": 3790, "hours": 156.2, "engagement_score": 70.6, "completion_rate": 46.9}, {"rank": 6, "artist": "The Strokes", "plays": 1784, "hours": 85.8, "engagement_score": 69.7, "completion_rate": 64.2}, {"rank": 7, "artist": "Paul McCartney", "plays": 2685, "hours": 98.6, "engagement_score": 67.8, "completion_rate": 54.7}, {"rank": 8, "artist": "Joaqu\u00edn Sabina", "plays": 794, "hours": 54.4, "engagement_score": 67.5, "completion_rate": 76.3}, {"rank": 9, "artist": "Kings of Leon", "plays": 1381, "hours": 60.7, "engagement_score": 64.9, "completion_rate": 58.1}, {"rank": 10, "artist": "The Rolling Stones", "plays": 2367, "hours": 84.1, "engagement_score": 64.6, "completion_rate": 44.4}], "top_tracks": [{"rank": 1, "track": "Ode To The Mets", "artist": "The Strokes", "plays": 203, "minutes": 1100.0}, {"rank": 2, "track": "The Return of the King (feat. Sir James Galway, Viggo Mortensen and Renee Fleming)", "artist": "Howard Shore", "plays": 120, "minutes": 1073.5}, {"rank": 3, "track": "The Fellowship Reunited (feat. Sir James Galway, Viggo Mortensen and Ren\u00e9e Fleming)", "artist": "Howard Shore", "plays": 78, "minutes": 745.9}, {"rank": 4, "track": "19 Dias y 500 Noches - En Directo", "artist": "Joaqu\u00edn Sabina", "plays": 146, "minutes": 706.5}, {"rank": 5, "track": "In the Blood", "artist": "John Mayer", "plays": 180, "minutes": 636.2}, {"rank": 6, "track": "Claudia's Theme - Version Eight", "artist": "Lennie Niehaus", "plays": 123, "minutes": 618.9}, {"rank": 7, "track": "Dying Breed", "artist": "The Killers", "plays": 166, "minutes": 603.0}, {"rank": 8, "track": "The Breaking of the Fellowship (feat. \"In Dreams\")", "artist": "Howard Shore", "plays": 93, "minutes": 600.1}, {"rank": 9, "track": "The Road Goes Ever On..., Pt. 1", "artist": "Howard Shore", "plays": 120, "minutes": 587.7}, {"rank": 10, "track": "All These Things That I've Done", "artist": "The Killers", "plays": 136, "minutes": 571.0}], "top_albums": [{"rank": 1, "album": "The Beatles", "artist": "The Beatles", "plays": 2050, "hours": 51.5}, {"rank": 2, "album": "The New Abnormal", "artist": "The Strokes", "plays": 719, "hours": 49.8}, {"rank": 3, "album": "Imploding The Mirage", "artist": "The Killers", "plays": 777, "hours": 44.4}, {"rank": 4, "album": "Abbey Road", "artist": "The Beatles", "plays": 1421, "hours": 41.1}, {"rank": 5, "album": "Blood On The Tracks", "artist": "Bob Dylan", "plays": 738, "hours": 40.2}, {"rank": 6, "album": "Past Masters", "artist": "The Beatles", "plays": 1667, "hours": 40.2}, {"rank": 7, "album": "Hot Fuss", "artist": "The Killers", "plays": 857, "hours": 38.9}, {"rank": 8, "album": "The Wall", "artist": "Pink Floyd", "plays": 1217, "hours": 38.3}, {"rank": 9, "album": "Pressure Machine", "artist": "The Killers", "plays": 561, "hours": 31.5}, {"rank": 10, "album": "Where the Light Is: John Mayer Live In Los Angeles", "artist": "John Mayer", "plays": 867, "hours": 31.1}], "yearly_hours": [{"year": 2013, "hours": 7.8}, {"year": 2014, "hours": 1.0}, {"year": 2015, "hours": 59.3}, {"year": 2016, "hours": 196.9}, {"year": 2017, "hours": 668.8}, {"year": 2018, "hours": 474.0}, {"year": 2019, "hours": 479.2}, {"year": 2020, "hours": 871.4}, {"year": 2021, "hours": 891.5}, {"year": 2022, "hours": 640.9}, {"year": 2023, "hours": 515.1}, {"year": 2024, "hours": 482.7}], "heatmap": {"days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"], "hours": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23], "matrix": [[2385.5, 2484.8, 1990.6, 1790.0, 1587.2, 1775.1, 1433.8, 768.6, 596.1, 101.1, 131.5, 122.2, 176.7, 472.1, 1157.3, 1510.0, 2952.9, 4485.4, 4186.4, 3469.4, 3626.5, 2862.1, 2141.0, 3101.1], [3939.2, 3134.1, 2571.1, 2289.2, 1393.8, 1510.5, 1301.1, 1006.1, 454.0, 370.6, 351.2, 296.4, 119.0, 735.8, 1509.5, 1670.2, 3237.3, 4056.6, 3592.9, 2887.3, 2553.4, 1819.9, 1758.8, 3123.1], [3155.0, 3199.0, 3149.7, 2520.3, 1867.3, 1768.6, 1878.3, 928.9, 335.1, 295.2, 192.3, 182.6, 407.8, 747.1, 1222.4, 1679.0, 3358.1, 3944.3, 3310.0, 2784.0, 3178.8, 2463.9, 2587.4, 3411.8], [3194.5, 2807.6, 2441.2, 2399.6, 2258.0, 2124.3, 2174.3, 964.0, 440.0, 502.6, 355.4, 151.1, 197.7, 527.9, 1113.6, 1678.8, 2272.6, 3370.3, 3161.9, 3455.2, 3604.5, 2247.4, 2405.0, 3192.6], [3523.7, 2530.8, 2669.0, 2445.6, 2607.4, 2511.2, 2524.5, 1235.1, 590.9, 406.0, 323.2, 118.8, 250.3, 581.6, 898.7, 1497.8, 2545.2, 3939.4, 4323.2, 4205.4, 3830.3, 3254.2, 2803.1, 2915.2], [3462.7, 2587.3, 2374.0, 2208.0, 2225.3, 1842.7, 1866.3, 1735.1, 994.5, 727.4, 437.0, 331.1, 329.2, 378.5, 339.9, 646.5, 875.0, 1630.9, 2058.9, 2023.3, 2366.8, 2462.5, 2473.3, 2593.6], [2134.0, 2442.6, 2142.4, 2903.4, 2094.2, 2197.3, 2262.9, 1862.9, 1570.5, 1052.2, 703.1, 572.3, 274.3, 317.8, 437.5, 333.4, 743.8, 1099.1, 1882.7, 2104.8, 2345.0, 3095.8, 2469.1, 2182.2]]}, "persona": {"primary": {"name": "Night Owl", "reason": "29.7% of your plays happen between midnight and 4am."}, "secondary": {"name": "Comfort Loop", "reason": "Just 2.77 unique artists per 100 plays -- you return to favorites again and again."}, "stats_used": {"late_night_ratio": 29.7, "morning_ratio": 15.4, "weekend_ratio": 25.3, "active_ratio": 46.3, "completed_ratio": 51.4, "quick_skip_ratio": 32.3, "top_artist_share": 9.1, "avg_repeats_per_artist": 36.1}}, "unlock_candidates": [{"artist": "The Beatles", "plays": 13530, "hours": 333.2}, {"artist": "The Killers", "plays": 6748, "hours": 286.7}, {"artist": "John Mayer", "plays": 4797, "hours": 197.7}, {"artist": "Bob Dylan", "plays": 3790, "hours": 156.2}, {"artist": "Paul McCartney", "plays": 2685, "hours": 98.6}, {"artist": "Led Zeppelin", "plays": 2470, "hours": 68.4}, {"artist": "Johnny Cash", "plays": 2467, "hours": 66.1}, {"artist": "The Rolling Stones", "plays": 2367, "hours": 84.1}, {"artist": "Radiohead", "plays": 2295, "hours": 59.5}, {"artist": "The Black Keys", "plays": 2221, "hours": 53.0}, {"artist": "Imagine Dragons", "plays": 2107, "hours": 66.8}, {"artist": "Pink Floyd", "plays": 2079, "hours": 71.3}], "merch_mock": {"The Beatles": ["The Beatles \u2014 Live Session Vinyl (Ltd. Edition)", "The Beatles \u2014 Front-Row Digital Meet & Greet"], "The Killers": ["The Killers \u2014 Live Session Vinyl (Ltd. Edition)", "The Killers \u2014 Front-Row Digital Meet & Greet"], "John Mayer": ["John Mayer \u2014 Live Session Vinyl (Ltd. Edition)", "John Mayer \u2014 Front-Row Digital Meet & Greet"], "Bob Dylan": ["Bob Dylan \u2014 Live Session Vinyl (Ltd. Edition)", "Bob Dylan \u2014 Front-Row Digital Meet & Greet"], "Paul McCartney": ["Paul McCartney \u2014 Live Session Vinyl (Ltd. Edition)", "Paul McCartney \u2014 Front-Row Digital Meet & Greet"], "Led Zeppelin": ["Led Zeppelin \u2014 Live Session Vinyl (Ltd. Edition)", "Led Zeppelin \u2014 Front-Row Digital Meet & Greet"], "Johnny Cash": ["Johnny Cash \u2014 Live Session Vinyl (Ltd. Edition)", "Johnny Cash \u2014 Front-Row Digital Meet & Greet"], "The Rolling Stones": ["The Rolling Stones \u2014 Live Session Vinyl (Ltd. Edition)", "The Rolling Stones \u2014 Front-Row Digital Meet & Greet"], "Radiohead": ["Radiohead \u2014 Live Session Vinyl (Ltd. Edition)", "Radiohead \u2014 Front-Row Digital Meet & Greet"], "The Black Keys": ["The Black Keys \u2014 Live Session Vinyl (Ltd. Edition)", "The Black Keys \u2014 Front-Row Digital Meet & Greet"], "Imagine Dragons": ["Imagine Dragons \u2014 Live Session Vinyl (Ltd. Edition)", "Imagine Dragons \u2014 Front-Row Digital Meet & Greet"], "Pink Floyd": ["Pink Floyd \u2014 Live Session Vinyl (Ltd. Edition)", "Pink Floyd \u2014 Front-Row Digital Meet & Greet"]}, "co_occurrence": {"The Killers": ["The Beatles", "John Mayer", "Bob Dylan"], "The Beatles": ["The Killers", "John Mayer", "Bob Dylan"], "John Mayer": ["The Beatles", "The Killers", "Bob Dylan"], "Howard Shore": ["The Beatles", "The Killers", "John Mayer"], "Bob Dylan": ["The Beatles", "The Killers", "John Mayer"]}}
+</script>
+
+<script>
+(function(){
+  const DATA = JSON.parse(document.getElementById('wrapped-data').textContent);
+
+  // ---------------- LANDING -> APP ----------------
+  const form = document.getElementById('name-form');
+  const input = document.getElementById('name-input');
+  const errorEl = document.getElementById('name-error');
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    const name = input.value.trim();
+    if (!name){
+      errorEl.textContent = 'Type a name or username to continue.';
+      input.focus();
+      return;
+    }
+    if (name.length > 24){
+      errorEl.textContent = 'Keep it under 24 characters.';
+      return;
+    }
+    errorEl.textContent = '';
+    launchApp(name);
+  });
+
+  function escapeHtml(str){
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  function launchApp(name){
+    document.getElementById('landing').style.display = 'none';
+    const app = document.getElementById('app');
+    app.classList.add('visible');
+    document.getElementById('nav-who').textContent = "for " + name;
+    document.title = name + "'s Echoprint";
+
+    const s = DATA.summary;
+    document.getElementById('hero-hours').textContent = s.total_hours.toLocaleString() + ' hrs';
+    document.getElementById('hero-copy').innerHTML =
+      `Hey <strong>${escapeHtml(name)}</strong> — that's ${s.total_hours.toLocaleString()} hours across ` +
+      `${s.years_covered} years (${s.date_start} → ${s.date_end}), spread over ` +
+      `${s.unique_artists.toLocaleString()} artists and ${s.unique_tracks.toLocaleString()} tracks.`;
+
+    const heroStats = [
+      {num:s.total_plays.toLocaleString(), lbl:'total plays'},
+      {num:s.unique_artists.toLocaleString(), lbl:'unique artists'},
+      {num:s.unique_albums.toLocaleString(), lbl:'unique albums'},
+      {num:s.years_covered, lbl:'years of history'},
+    ];
+    document.getElementById('hero-stats').innerHTML = heroStats.map(function(h){
+      return `<div class="stat-cell"><div class="num">${h.num}</div><div class="lbl">${h.lbl}</div></div>`;
+    }).join('');
+
+    // ---------------- PERSONA ----------------
+    const p = DATA.persona;
+    document.getElementById('persona-primary').textContent = p.primary.name;
+    document.getElementById('persona-reason').textContent = p.primary.reason;
+    if (p.secondary){
+      const secEl = document.getElementById('persona-secondary');
+      secEl.style.display = 'inline-block';
+      secEl.textContent = 'also: ' + p.secondary.name;
+    }
+    document.getElementById('echo-id').textContent = '#' + Math.abs(hashCode(name)).toString().slice(0,6);
+    document.getElementById('stub-range').textContent = s.date_start.slice(0,4) + '–' + s.date_end.slice(0,4);
+
+    // ---------------- TOP ARTISTS CHART ----------------
+    const maxScore = Math.max.apply(null, DATA.top_artists.map(a => a.engagement_score));
+    document.getElementById('artist-chart').innerHTML = DATA.top_artists.map(function(a){
+      return `<div class="bar-row">
+        <div><span class="bar-rank">#${a.rank}</span> <span class="bar-name">${escapeHtml(a.artist)}</span></div>
+        <div class="bar-track"><div class="bar-fill" data-w="${(a.engagement_score/maxScore*100).toFixed(1)}"></div></div>
+        <div class="bar-score">${a.engagement_score}</div>
+      </div>`;
+    }).join('');
+
+    // ---------------- YEARLY HOURS CHART ----------------
+    const maxHours = Math.max.apply(null, DATA.yearly_hours.map(y => y.hours));
+    document.getElementById('yearly-chart').innerHTML = DATA.yearly_hours.map(function(y){
+      return `<div class="year-col">
+        <div class="year-val">${Math.round(y.hours)}</div>
+        <div class="year-bar" data-h="${(y.hours/maxHours*100).toFixed(1)}"></div>
+        <div class="year-lbl">${String(y.year).slice(2)}</div>
+      </div>`;
+    }).join('');
+
+    // ---------------- HEATMAP ----------------
+    const hm = DATA.heatmap;
+    const flat = hm.matrix.flat();
+    const maxMin = Math.max.apply(null, flat);
+    function heatColor(v){
+      const t = maxMin ? v / maxMin : 0;
+      // interpolate bg -> sage_mid -> sage_dark
+      const stops = [[246,247,240],[140,150,104],[75,82,51]];
+      let seg = t < 0.5 ? 0 : 1;
+      let localT = t < 0.5 ? t/0.5 : (t-0.5)/0.5;
+      const c0 = stops[seg], c1 = stops[seg+1];
+      const r = Math.round(c0[0] + (c1[0]-c0[0])*localT);
+      const g = Math.round(c0[1] + (c1[1]-c0[1])*localT);
+      const b = Math.round(c0[2] + (c1[2]-c0[2])*localT);
+      return `rgb(${r},${g},${b})`;
+    }
+    let heatHtml = '<div></div>';
+    hm.hours.forEach(function(h){
+      heatHtml += `<div class="hourlabel">${h}</div>`;
+    });
+    hm.days.forEach(function(day, di){
+      heatHtml += `<div class="hlabel">${day.slice(0,3)}</div>`;
+      hm.hours.forEach(function(h, hi){
+        const v = hm.matrix[di][hi];
+        heatHtml += `<div class="hcell" title="${day} ${h}:00 — ${v.toFixed(0)} min" style="background:${heatColor(v)}"></div>`;
+      });
+    });
+    document.getElementById('heatmap').innerHTML = heatHtml;
+
+    // ---------------- TRACK / ALBUM LISTS ----------------
+    document.getElementById('track-list').innerHTML = DATA.top_tracks.slice(0,8).map(function(t){
+      return `<div class="list-item">
+        <div><div class="name">${escapeHtml(t.track)}</div><div class="sub">${escapeHtml(t.artist)}</div></div>
+        <div class="val">${t.minutes.toLocaleString()}m</div>
+      </div>`;
+    }).join('');
+    document.getElementById('album-list').innerHTML = DATA.top_albums.slice(0,8).map(function(al){
+      return `<div class="list-item">
+        <div><div class="name">${escapeHtml(al.album)}</div><div class="sub">${escapeHtml(al.artist)}</div></div>
+        <div class="val">${al.hours}h</div>
+      </div>`;
+    }).join('');
+
+    // ---------------- UNLOCK SECTION ----------------
+    const slider = document.getElementById('threshold-slider');
+    const thresholdVal = document.getElementById('threshold-val');
+    function renderUnlock(){
+      const threshold = parseInt(slider.value, 10);
+      thresholdVal.textContent = threshold.toLocaleString() + ' plays';
+      document.getElementById('unlock-grid').innerHTML = DATA.unlock_candidates.map(function(c){
+        const unlocked = c.plays >= threshold;
+        const items = (DATA.merch_mock[c.artist] || []);
+        return `<div class="artist-card ${unlocked ? '' : 'locked'}">
+          <div class="aname">${escapeHtml(c.artist)}</div>
+          <div class="astat">${c.plays.toLocaleString()} plays · ${c.hours}h</div>
+          <span class="status-pill ${unlocked ? 'unlocked' : 'locked'}">${unlocked ? '✓ unlocked' : '🔒 locked'}</span>
+          ${unlocked ? `<ul class="merch-list">${items.map(i => `<li>${escapeHtml(i)}</li>`).join('')}</ul>` : ''}
+        </div>`;
+      }).join('');
+    }
+    slider.addEventListener('input', renderUnlock);
+    renderUnlock();
+
+    // ---------------- RECOMMENDATIONS ----------------
+    const co = DATA.co_occurrence;
+    let recHtml = '';
+    Object.keys(co).slice(0,2).forEach(function(artist){
+      recHtml += `<div class="rec-card">
+        <span class="tag real">real · same-day co-occurrence</span>
+        <h4>Because you play ${escapeHtml(artist)}...</h4>
+        <p style="font-size:0.85rem;opacity:0.8;">On days you listened to ${escapeHtml(artist)}, you also frequently played:</p>
+        <ul class="merch-list">${co[artist].map(a => `<li>${escapeHtml(a)}</li>`).join('')}</ul>
+      </div>`;
+    });
+    const mockArtist = DATA.top_artists[0].artist;
+    recHtml += `<div class="rec-card">
+      <span class="tag mock">mock · placeholder tour data</span>
+      <h4>${escapeHtml(mockArtist)} — Upcoming (demo)</h4>
+      <p style="font-size:0.85rem;opacity:0.8;">No real tour/release-date feed is connected. In production this card would pull live concert and release data for your top artists.</p>
+      <ul class="merch-list"><li>Placeholder: new album, TBA</li><li>Placeholder: tour date near you, TBA</li></ul>
+    </div>`;
+    document.getElementById('rec-grid').innerHTML = recHtml;
+
+    // trigger CSS transitions after paint
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        document.querySelectorAll('.bar-fill').forEach(el => el.style.width = el.dataset.w + '%');
+        document.querySelectorAll('.year-bar').forEach(el => el.style.height = el.dataset.h + '%');
+      });
+    });
+
+    window.scrollTo(0,0);
+  }
+
+  function hashCode(str){
+    let hash = 0;
+    for (let i=0;i<str.length;i++){
+      hash = ((hash<<5) - hash) + str.charCodeAt(i);
+      hash |= 0;
+    }
+    return hash;
+  }
+})();
+</script>
+</body>
+</html>
