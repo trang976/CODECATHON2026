@@ -1,964 +1,2073 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bug Bytes — Your Listening, Decoded</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%234B5233'/%3E%3Cpath d='M40 66 V32 L70 26 V58' fill='none' stroke='%23F6F7F0' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='34' cy='68' r='9' fill='%23F6F7F0'/%3E%3Ccircle cx='64' cy='60' r='9' fill='%23F6F7F0'/%3E%3Ccircle cx='64' cy='60' r='9' fill='none' stroke='%23E8A07C' stroke-width='2'/%3E%3C/svg%3E">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,500;1,600&family=Fraunces:ital,wght@0,500;0,600;0,700;1,600;1,700&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<style>
-  :root{
-    --font: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    --serif: 'Fraunces', ui-serif, Georgia, serif;
-    --bg:        #F6F7F0;
-    --paper:     #FFFFFF;
-    --ink:       #2E3320;
-    --sage-mid:  #8C9668;
-    --sage-dark: #4B5233;
-    --peach:     #E8A07C;
-    --line:      rgba(46,51,32,0.14);
-    --shadow:    0 12px 32px rgba(46,51,32,0.10);
-    --nav-bg:    rgba(246,247,240,0.92);
-    --track-bg:  rgba(140,150,104,0.16);
-    --radius:    14px;
-    --header-h:  57px;
-    --pagenav-h: 52px;
-    /* theme-invariant: the ticket stub + heatmap scale always read the same in both themes */
-    --ticket-bg:   #3E4529;
-    --ticket-ink:  #F6F7F0;
-    --heat-0: rgba(140,150,104,0.08);
-    --heat-1: rgba(140,150,104,0.28);
-    --heat-2: rgba(140,150,104,0.52);
-    --heat-3: rgba(75,82,51,0.78);
-    --heat-4: rgba(62,69,41,1);
-  }
-  html[data-theme="dark"]{
-    --bg:        #171B10;
-    --paper:     #222818;
-    --ink:       #E8ECDC;
-    --sage-mid:  #A6B87D;
-    --sage-dark: #C3D497;
-    --peach:     #EFB08D;
-    --line:      rgba(232,236,220,0.14);
-    --shadow:    0 12px 32px rgba(0,0,0,0.45);
-    --nav-bg:    rgba(23,27,16,0.88);
-    --track-bg:  rgba(163,182,124,0.16);
-    --heat-0: rgba(163,182,124,0.07);
-    --heat-1: rgba(163,182,124,0.24);
-    --heat-2: rgba(163,182,124,0.46);
-    --heat-3: rgba(195,212,151,0.72);
-    --heat-4: rgba(228,238,196,0.96);
-  }
-  *{box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
-  body{
-    margin:0;
-    background:var(--bg);
-    color:var(--ink);
-    font-family:var(--font);
-    -webkit-font-smoothing:antialiased;
-    transition:background 0.25s ease, color 0.25s ease;
-  }
-  h1,h2,h3{font-family:var(--font);font-weight:700;letter-spacing:-0.01em;margin:0;}
-  .serif{font-family:var(--serif);}
-  .mono{font-family:var(--font);}
-  a{color:inherit;}
-  ::selection{background:var(--sage-mid);color:var(--bg);}
-  :focus-visible{outline:2px solid var(--sage-dark);outline-offset:3px;}
-  button{font-family:inherit;}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bug Bytes — Your Listening, Decoded</title>
+  <link rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%234B5233'/%3E%3Cpath d='M40 66 V32 L70 26 V58' fill='none' stroke='%23F6F7F0' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='34' cy='68' r='9' fill='%23F6F7F0'/%3E%3Ccircle cx='64' cy='60' r='9' fill='%23F6F7F0'/%3E%3Ccircle cx='64' cy='60' r='9' fill='none' stroke='%23E8A07C' stroke-width='2'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,500;1,600&family=Fraunces:ital,wght@0,500;0,600;0,700;1,600;1,700&display=swap"
+    rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    :root {
+      --font: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      --serif: 'Fraunces', ui-serif, Georgia, serif;
+      --bg: #F6F7F0;
+      --paper: #FFFFFF;
+      --ink: #2E3320;
+      --sage-mid: #8C9668;
+      --sage-dark: #4B5233;
+      --peach: #E8A07C;
+      --line: rgba(46, 51, 32, 0.14);
+      --shadow: 0 12px 32px rgba(46, 51, 32, 0.10);
+      --nav-bg: rgba(246, 247, 240, 0.92);
+      --track-bg: rgba(140, 150, 104, 0.16);
+      --radius: 14px;
+      --header-h: 57px;
+      --pagenav-h: 52px;
+      /* theme-invariant: the ticket stub + heatmap scale always read the same in both themes */
+      --ticket-bg: #3E4529;
+      --ticket-ink: #F6F7F0;
+      --heat-0: rgba(140, 150, 104, 0.08);
+      --heat-1: rgba(140, 150, 104, 0.28);
+      --heat-2: rgba(140, 150, 104, 0.52);
+      --heat-3: rgba(75, 82, 51, 0.78);
+      --heat-4: rgba(62, 69, 41, 1);
+    }
 
-  @media (prefers-reduced-motion: reduce){
-    *{animation:none !important;transition:none !important;}
-  }
+    html[data-theme="dark"] {
+      --bg: #171B10;
+      --paper: #222818;
+      --ink: #E8ECDC;
+      --sage-mid: #A6B87D;
+      --sage-dark: #C3D497;
+      --peach: #EFB08D;
+      --line: rgba(232, 236, 220, 0.14);
+      --shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+      --nav-bg: rgba(23, 27, 16, 0.88);
+      --track-bg: rgba(163, 182, 124, 0.16);
+      --heat-0: rgba(163, 182, 124, 0.07);
+      --heat-1: rgba(163, 182, 124, 0.24);
+      --heat-2: rgba(163, 182, 124, 0.46);
+      --heat-3: rgba(195, 212, 151, 0.72);
+      --heat-4: rgba(228, 238, 196, 0.96);
+    }
 
-  /* ---------- LANDING ---------- */
-  #landing{
-    min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;
-    padding:2rem;text-align:center;position:relative;overflow:hidden;
-  }
-  #landing::before{
-    content:"";position:absolute;inset:0;
-    background:
-      radial-gradient(circle at 15% 20%, rgba(140,150,104,0.16) 0%, transparent 40%),
-      radial-gradient(circle at 85% 80%, rgba(232,160,124,0.18) 0%, transparent 45%);
-    pointer-events:none;
-  }
-  .eyebrow{
-    font-family:var(--font);font-size:0.72rem;letter-spacing:0.18em;text-transform:uppercase;
-    color:var(--sage-dark);opacity:0.85;margin-bottom:1rem;
-  }
-  .logo{font-family:var(--serif);font-size:clamp(2.6rem,7vw,4.6rem);line-height:0.95;margin-bottom:0.6rem;}
-  .logo em{font-style:italic;color:var(--sage-dark);}
-  .tagline{max-width:34rem;font-size:1.05rem;color:var(--ink);opacity:0.72;margin-bottom:2.4rem;}
-  #name-form{display:flex;gap:0.6rem;flex-wrap:wrap;justify-content:center;position:relative;z-index:1;}
-  #name-input{
-    font-family:var(--font);font-size:1rem;padding:0.9rem 1.1rem;border:1.5px solid var(--sage-dark);
-    border-radius:8px;background:var(--paper);color:var(--ink);width:16rem;max-width:60vw;
-  }
-  #name-input::placeholder{color:rgba(46,51,32,0.4);}
-  .btn{
-    font-family:var(--font);font-size:0.92rem;font-weight:600;padding:0.9rem 1.5rem;border-radius:8px;
-    border:none;background:var(--sage-dark);color:var(--bg);cursor:pointer;
-    transition:transform 0.15s ease, background 0.15s ease, opacity 0.15s ease;
-  }
-  .btn:hover{opacity:0.88;transform:translateY(-1px);}
-  .btn:active{transform:translateY(0);}
-  .btn:disabled{opacity:0.55;cursor:wait;transform:none;}
-  .btn.secondary{background:transparent;border:1.5px solid var(--sage-dark);color:var(--sage-dark);}
-  .btn.secondary:hover{background:var(--track-bg);opacity:1;}
-  .btn.small{padding:0.5rem 0.9rem;font-size:0.78rem;}
-  #name-error{color:#a14545;font-size:0.82rem;margin-top:0.6rem;min-height:1.2em;font-family:var(--font);}
-  .scroll-hint{position:absolute;bottom:2rem;font-family:var(--font);font-size:0.7rem;letter-spacing:0.1em;color:var(--sage-dark);opacity:0.7;}
+    * {
+      box-sizing: border-box;
+    }
 
-  /* ---------- MAIN APP ---------- */
-  #app{display:none;}
-  #app.visible{display:block;}
+    html {
+      scroll-behavior: smooth;
+    }
 
-  header.site-header{
-    position:sticky;top:0;z-index:30;background:var(--nav-bg);backdrop-filter:blur(6px);
-    border-bottom:1px solid var(--line);padding:0.9rem 1.5rem;
-    display:flex;align-items:center;justify-content:space-between;gap:1rem;
-  }
-  header.site-header .brand{font-family:var(--serif);font-weight:700;font-size:1.15rem;white-space:nowrap;}
-  header.site-header .brand em{font-style:italic;color:var(--sage-dark);}
-  header.site-header .who{font-family:var(--font);font-size:0.78rem;opacity:0.7;}
-  header.site-header .header-right{display:flex;align-items:center;gap:0.7rem;}
-  #theme-toggle{
-    display:inline-flex;align-items:center;gap:0.4rem;background:var(--paper);border:1.5px solid var(--line);
-    color:var(--ink);font-family:var(--font);font-size:0.76rem;padding:0.45rem 0.8rem;border-radius:999px;
-    cursor:pointer;transition:background 0.15s ease;
-  }
-  #theme-toggle:hover{background:var(--track-bg);}
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font);
+      -webkit-font-smoothing: antialiased;
+      transition: background 0.25s ease, color 0.25s ease;
+    }
 
-  /* ---------- PRIMARY PAGE NAV (real pages, not scroll anchors) ---------- */
-  nav.page-nav{
-    position:sticky;top:var(--header-h);z-index:29;background:var(--nav-bg);backdrop-filter:blur(6px);
-    border-bottom:1px solid var(--line);display:flex;gap:0.4rem;padding:0.6rem 1.5rem;
-    overflow-x:auto;scrollbar-width:thin;
-  }
-  nav.page-nav button{
-    display:flex;align-items:center;gap:0.45rem;
-    font-family:var(--font);font-size:0.78rem;letter-spacing:0.02em;white-space:nowrap;
-    padding:0.45rem 0.9rem;border-radius:999px;color:var(--ink);opacity:0.62;
-    background:none;border:1px solid transparent;cursor:pointer;
-    transition:opacity 0.15s ease, border-color 0.15s ease, background 0.15s ease;
-  }
-  nav.page-nav button svg{width:14px;height:14px;opacity:0.85;}
-  nav.page-nav button:hover{opacity:1;background:var(--track-bg);}
-  nav.page-nav button.active{opacity:1;color:var(--sage-dark);border-color:var(--line);background:var(--paper);font-weight:600;}
+    h1,
+    h2,
+    h3 {
+      font-family: var(--font);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin: 0;
+    }
 
-  main{max-width:64rem;margin:0 auto;}
-  .page{display:none;padding:0 1.5rem;}
-  .page.active{display:block;}
+    .serif {
+      font-family: var(--serif);
+    }
 
-  /* ---------- SCROLL/PAGE REVEAL ---------- */
-  .reveal{opacity:0;transform:translateY(14px);transition:opacity 0.5s ease, transform 0.5s ease;}
-  .reveal.in-view{opacity:1;transform:translateY(0);}
+    .mono {
+      font-family: var(--font);
+    }
 
-  .page-head{padding:2.6rem 0 0;}
-  .section-label{
-    font-family:var(--font);font-size:0.72rem;letter-spacing:0.16em;text-transform:uppercase;
-    color:var(--sage-dark);margin-bottom:0.8rem;display:block;
-  }
-  .section-title{font-family:var(--serif);font-size:clamp(1.7rem,4vw,2.4rem);font-weight:700;margin-bottom:0.6rem;}
-  .section-sub{max-width:38rem;opacity:0.72;margin-bottom:2rem;line-height:1.55;}
-  .page-body{padding-bottom:4.5rem;}
-  .page-actions{display:flex;gap:0.6rem;flex-wrap:wrap;align-items:center;margin:1.4rem 0 0.4rem;position:relative;}
+    a {
+      color: inherit;
+    }
 
-  /* ---------- DOWNLOAD MENU ---------- */
-  .download-wrap{position:relative;}
-  .download-menu{
-    position:absolute;top:calc(100% + 6px);left:0;z-index:15;background:var(--paper);border:1px solid var(--line);
-    border-radius:10px;box-shadow:var(--shadow);padding:0.35rem;display:none;min-width:9.5rem;
-  }
-  .download-menu.open{display:block;}
-  .download-menu button{
-    display:flex;align-items:center;gap:0.5rem;width:100%;text-align:left;background:none;border:none;
-    font-family:var(--font);font-size:0.8rem;color:var(--ink);padding:0.5rem 0.6rem;border-radius:6px;cursor:pointer;
-  }
-  .download-menu button:hover{background:var(--track-bg);}
-  #dl-toast{
-    position:fixed;right:1.4rem;bottom:1.4rem;z-index:60;max-width:16rem;font-family:var(--font);font-size:0.74rem;
-    background:var(--paper);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:0.7rem 0.9rem;
-    box-shadow:var(--shadow);opacity:0;transform:translateY(6px);pointer-events:none;transition:opacity 0.2s ease, transform 0.2s ease;
-  }
-  #dl-toast.show{opacity:1;transform:translateY(0);}
+    ::selection {
+      background: var(--sage-mid);
+      color: var(--bg);
+    }
 
-  /* ---------- HERO / WELCOME ---------- */
-  #welcome-content{padding-top:0.5rem;}
-  .hero-number{font-family:var(--serif);font-weight:700;font-size:clamp(3rem,11vw,6.5rem);line-height:0.92;color:var(--sage-dark);}
-  .hero-copy{font-size:1.2rem;max-width:36rem;margin-top:1rem;line-height:1.55;}
-  .stat-row{
-    display:grid;grid-template-columns:repeat(auto-fit,minmax(9.5rem,1fr));gap:1px;background:var(--line);
-    border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;margin-top:2.2rem;
-  }
-  .stat-cell{background:var(--paper);padding:1.3rem 1.2rem;}
-  .stat-cell .num{font-family:var(--font);font-size:1.5rem;font-weight:600;color:var(--ink);}
-  .stat-cell .lbl{font-size:0.78rem;opacity:0.62;margin-top:0.2rem;}
+    :focus-visible {
+      outline: 2px solid var(--sage-dark);
+      outline-offset: 3px;
+    }
 
-  /* ---------- PERSONA TICKET STUB (theme-invariant) ---------- */
-  .ticket{
-    position:relative;background:var(--ticket-bg);color:var(--ticket-ink);border-radius:var(--radius);
-    box-shadow:var(--shadow);display:grid;grid-template-columns:1fr auto;overflow:hidden;margin-top:2.2rem;
-  }
-  .ticket-main{padding:2.2rem 2rem;}
-  .ticket-stub{
-    padding:2.2rem 1.6rem;border-left:2px dashed rgba(246,247,240,0.35);display:flex;flex-direction:column;
-    align-items:center;justify-content:center;min-width:9rem;text-align:center;background:rgba(0,0,0,0.15);
-  }
-  .ticket .eyebrow-light{font-family:var(--font);font-size:0.7rem;letter-spacing:0.16em;text-transform:uppercase;opacity:0.7;margin-bottom:0.5rem;}
-  .persona-name{font-family:var(--serif);font-weight:700;font-style:italic;font-size:clamp(1.8rem,4.5vw,2.6rem);margin-bottom:0.6rem;}
-  .persona-sub{font-family:var(--font);font-size:0.85rem;opacity:0.88;line-height:1.5;max-width:28rem;}
-  .persona-secondary{
-    display:inline-block;margin-top:1rem;font-family:var(--font);font-size:0.72rem;letter-spacing:0.06em;
-    padding:0.35rem 0.7rem;border:1px solid rgba(246,247,240,0.4);border-radius:999px;
-  }
-  .ticket-stub .mono{font-size:0.68rem;opacity:0.75;letter-spacing:0.08em;}
-  .ticket-stub .big-id{font-family:var(--font);font-size:1rem;font-weight:600;margin:0.4rem 0;}
-  @media (max-width:34rem){ .ticket{grid-template-columns:1fr;} .ticket-stub{border-left:none;border-top:2px dashed rgba(246,247,240,0.35);} }
+    button {
+      font-family: inherit;
+    }
 
-  /* ---------- CAROUSEL (shared: Insights + Rotation) ---------- */
-  .carousel{position:relative;padding:0 3.4rem;}
-  .carousel-viewport{overflow:hidden;border-radius:var(--radius);}
-  .carousel-track{display:flex;transition:transform 0.4s cubic-bezier(.2,.8,.2,1);}
-  .carousel-slide{flex:0 0 100%;min-width:100%;}
-  .carousel-btn{
-    position:absolute;top:50%;transform:translateY(-50%);width:2.6rem;height:2.6rem;border-radius:50%;
-    background:var(--paper);border:1.5px solid var(--line);color:var(--sage-dark);font-size:1.1rem;
-    display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--shadow);
-    transition:background 0.15s ease, transform 0.15s ease;
-    z-index:5;
-  }
-  .carousel-btn:hover{background:var(--track-bg);}
-  .carousel-btn:disabled{opacity:0.35;cursor:not-allowed;}
-  .carousel-btn.prev{left:0;}
-  .carousel-btn.next{right:0;}
-  .carousel-meta{
-    display:flex;align-items:center;justify-content:center;gap:0.6rem;margin-top:1.1rem;
-    font-family:var(--font);font-size:0.72rem;color:var(--sage-dark);letter-spacing:0.06em;text-transform:uppercase;
-  }
-  .carousel-dots{display:flex;gap:0.4rem;}
-  .carousel-dots span{width:6px;height:6px;border-radius:50%;background:var(--line);transition:background 0.2s ease, transform 0.2s ease;}
-  .carousel-dots span.active{background:var(--sage-dark);transform:scale(1.3);}
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
 
-  /* ---------- CHARTS ---------- */
-  .chart-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:1.6rem 1.6rem 1.2rem;box-shadow:var(--shadow);}
-  .chart-eyebrow-row{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:0.2rem;}
-  .bar-row{display:grid;grid-template-columns:9.5rem 1fr 3.2rem;align-items:center;gap:0.8rem;padding:0.55rem 0;border-bottom:1px solid var(--line);font-size:0.86rem;}
-  .bar-row:last-child{border-bottom:none;}
-  .bar-rank{font-family:var(--font);color:var(--sage-dark);font-size:0.75rem;}
-  .bar-name{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .bar-track{height:0.85rem;background:var(--track-bg);border-radius:4px;overflow:hidden;}
-  .bar-fill{height:100%;background:linear-gradient(90deg,var(--sage-mid),var(--sage-dark));border-radius:4px;transition:width 0.9s cubic-bezier(.2,.8,.2,1);width:0;}
-  .bar-score{font-family:var(--font);text-align:right;color:var(--ink);font-weight:600;}
+    /* ---------- LANDING ---------- */
+    #landing {
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
 
-  .yearly-chart{display:flex;align-items:flex-end;gap:0.6rem;height:14rem;padding-top:1rem;}
-  .year-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;}
-  .year-bar{width:100%;max-width:2.6rem;background:linear-gradient(180deg,var(--peach),var(--sage-dark));border-radius:5px 5px 2px 2px;transition:height 1s cubic-bezier(.2,.8,.2,1);height:0;}
-  .year-val{font-family:var(--font);font-size:0.68rem;margin-top:0.4rem;color:var(--ink);opacity:0.75;}
-  .year-lbl{font-family:var(--font);font-size:0.68rem;margin-top:0.2rem;color:var(--sage-dark);}
+    #landing::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(140, 150, 104, 0.16) 0%, transparent 40%),
+        radial-gradient(circle at 85% 80%, rgba(232, 160, 124, 0.18) 0%, transparent 45%);
+      pointer-events: none;
+    }
 
-  /* ---------- HEATMAP (User Behaviour) ---------- */
-  .heat-wrap{overflow-x:auto;}
-  .heat-grid{display:grid;grid-template-columns:2.6rem repeat(24, minmax(1.7rem,1fr));gap:4px;min-width:40rem;}
-  .heat-hourlbl{grid-row:1;font-family:var(--font);font-size:0.62rem;color:var(--ink);opacity:0.5;text-align:center;align-self:end;padding-bottom:2px;}
-  .heat-daylbl{font-family:var(--font);font-size:0.72rem;color:var(--ink);opacity:0.7;display:flex;align-items:center;}
-  .heat-cell{
-    aspect-ratio:1;border-radius:5px;cursor:pointer;position:relative;
-    border:1px solid var(--line);
-  }
-  .heat-cell:hover{outline:1.5px solid var(--sage-dark);}
-  .heat-legend{display:flex;align-items:center;gap:0.4rem;margin-top:1.1rem;font-family:var(--font);font-size:0.7rem;opacity:0.7;}
-  .heat-legend .sw{width:0.85rem;height:0.85rem;border-radius:3px;border:1px solid var(--line);}
-  #heat-tooltip{
-    position:fixed;pointer-events:none;background:var(--ticket-bg);color:var(--ticket-ink);
-    font-family:var(--font);font-size:0.72rem;padding:0.45rem 0.65rem;border-radius:8px;box-shadow:var(--shadow);
-    opacity:0;transition:opacity 0.1s ease;z-index:50;white-space:nowrap;
-  }
-  #heat-tooltip.show{opacity:1;}
-  #heat-tooltip .tv{font-weight:700;color:var(--peach);}
+    .eyebrow {
+      font-family: var(--font);
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--sage-dark);
+      opacity: 0.85;
+      margin-bottom: 1rem;
+    }
 
-  /* ---------- HEAVY ROTATION (tracks/albums with art frames) ---------- */
-  .rotation-list{display:flex;flex-direction:column;}
-  .rotation-row{display:flex;align-items:center;gap:0.9rem;padding:0.65rem 0;border-bottom:1px solid var(--line);}
-  .rotation-row:last-child{border-bottom:none;}
-  .art-frame{
-    flex:none;border-radius:8px;position:relative;overflow:hidden;
-    display:flex;align-items:center;justify-content:center;color:var(--ticket-ink);
-    box-shadow:0 4px 10px rgba(0,0,0,0.18);
-  }
-  .art-frame.sm{width:2.6rem;height:2.6rem;}
-  .art-frame.lg{width:100%;aspect-ratio:1;border-radius:10px;margin-bottom:0.7rem;}
-  .art-frame .mono{position:relative;z-index:2;font-weight:700;letter-spacing:0.02em;}
-  .art-frame.sm .mono{font-size:0.82rem;}
-  .art-frame.lg .mono{font-size:1.6rem;}
-  .art-frame svg{position:absolute;opacity:0.28;z-index:1;}
-  .art-frame.sm svg{width:60%;height:60%;}
-  .art-frame.lg svg{width:46%;height:46%;}
-  .rotation-main{flex:1;min-width:0;}
-  .rotation-main .name{font-weight:600;font-size:0.92rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .rotation-main .sub{opacity:0.6;font-size:0.78rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .rotation-val{font-family:var(--font);font-size:0.8rem;color:var(--sage-dark);white-space:nowrap;flex:none;}
-  .rotation-rank{font-family:var(--font);color:var(--sage-dark);font-size:0.72rem;flex:none;width:1.3rem;}
+    .logo {
+      font-family: var(--serif);
+      font-size: clamp(2.6rem, 7vw, 4.6rem);
+      line-height: 0.95;
+      margin-bottom: 0.6rem;
+    }
 
-  .album-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(9.5rem,1fr));gap:1.1rem;}
-  .album-card{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:0.7rem;box-shadow:var(--shadow);}
-  .album-card .name{font-weight:600;font-size:0.84rem;line-height:1.3;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
-  .album-card .sub{font-size:0.74rem;opacity:0.6;margin-top:0.15rem;}
-  .album-card .val{font-family:var(--font);font-size:0.72rem;color:var(--sage-dark);margin-top:0.35rem;}
+    .logo em {
+      font-style: italic;
+      color: var(--sage-dark);
+    }
 
-  .note{background:var(--track-bg);border:1px solid var(--line);border-radius:10px;padding:0.9rem 1.1rem;font-size:0.82rem;line-height:1.5;margin-top:1.6rem;}
-  .note strong{color:var(--sage-dark);}
+    .tagline {
+      max-width: 34rem;
+      font-size: 1.05rem;
+      color: var(--ink);
+      opacity: 0.72;
+      margin-bottom: 2.4rem;
+    }
 
-  /* ---------- BACKSTAGE PASS (fixed tier ladder) ---------- */
-  .pass-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(17.5rem,1fr));gap:1rem;}
-  .pass-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.3rem 1.4rem;}
-  .pass-head{display:flex;justify-content:space-between;align-items:baseline;gap:0.6rem;margin-bottom:0.15rem;}
-  .pass-head .aname{font-weight:700;font-size:1rem;}
-  .pass-head .astreams{font-family:var(--font);font-size:0.72rem;opacity:0.6;white-space:nowrap;}
-  .pass-current{font-family:var(--font);font-size:0.7rem;letter-spacing:0.05em;text-transform:uppercase;color:var(--sage-dark);margin-bottom:0.9rem;}
+    #name-form {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+    }
 
-  .tier-ladder{display:flex;flex-direction:column;gap:0.55rem;}
-  .tier-row{
-    display:grid;grid-template-columns:1.6rem 1fr auto;align-items:center;gap:0.6rem;
-    padding:0.5rem 0.6rem;border-radius:8px;border:1px solid var(--line);
-  }
-  .tier-row.unlocked{background:var(--track-bg);}
-  .tier-row.locked{opacity:0.5;}
-  .tier-badge{width:1.6rem;height:1.6rem;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.9rem;flex:none;}
-  .tier-row[data-tier="bronze"] .tier-badge{background:#CD9564;color:#fff;}
-  .tier-row[data-tier="silver"] .tier-badge{background:#B9BFC6;color:#2E3320;}
-  .tier-row[data-tier="gold"] .tier-badge{background:#E7C26B;color:#2E3320;}
-  .tier-row.locked .tier-badge{background:var(--line);color:var(--ink);}
-  .tier-info .tname{font-weight:700;font-size:0.8rem;}
-  .tier-info .treward{font-size:0.74rem;opacity:0.72;line-height:1.35;margin-top:0.05rem;}
-  .tier-code{
-    font-family:var(--font);font-weight:600;font-size:0.74rem;letter-spacing:0.04em;background:var(--paper);
-    color:var(--sage-dark);border:1px dashed var(--sage-dark);padding:0.25rem 0.5rem;border-radius:6px;cursor:pointer;white-space:nowrap;
-  }
-  .tier-code.copied::after{content:" ✓";}
-  .tier-lockednote{font-family:var(--font);font-size:0.68rem;opacity:0.55;white-space:nowrap;}
+    #name-input {
+      font-family: var(--font);
+      font-size: 1rem;
+      padding: 0.9rem 1.1rem;
+      border: 1.5px solid var(--sage-dark);
+      border-radius: 8px;
+      background: var(--paper);
+      color: var(--ink);
+      width: 16rem;
+      max-width: 60vw;
+    }
 
-  .pass-progress{margin-top:0.9rem;}
-  .pass-progress .ptrack{height:0.4rem;background:var(--track-bg);border-radius:4px;overflow:hidden;}
-  .pass-progress .pfill{height:100%;background:linear-gradient(90deg,var(--peach),var(--sage-dark));border-radius:4px;transition:width 0.8s cubic-bezier(.2,.8,.2,1);width:0;}
-  .pass-progress .ptext{font-family:var(--font);font-size:0.68rem;opacity:0.65;margin-top:0.4rem;}
+    #name-input::placeholder {
+      color: rgba(46, 51, 32, 0.4);
+    }
 
-  footer{border-top:1px solid var(--line);padding:2rem 1.5rem;text-align:center;}
-  footer .foot-note{max-width:34rem;margin:0 auto;font-size:0.78rem;opacity:0.6;line-height:1.5;}
-</style>
+    .btn {
+      font-family: var(--font);
+      font-size: 0.92rem;
+      font-weight: 600;
+      padding: 0.9rem 1.5rem;
+      border-radius: 8px;
+      border: none;
+      background: var(--sage-dark);
+      color: var(--bg);
+      cursor: pointer;
+      transition: transform 0.15s ease, background 0.15s ease, opacity 0.15s ease;
+    }
+
+    .btn:hover {
+      opacity: 0.88;
+      transform: translateY(-1px);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn:disabled {
+      opacity: 0.55;
+      cursor: wait;
+      transform: none;
+    }
+
+    .btn.secondary {
+      background: transparent;
+      border: 1.5px solid var(--sage-dark);
+      color: var(--sage-dark);
+    }
+
+    .btn.secondary:hover {
+      background: var(--track-bg);
+      opacity: 1;
+    }
+
+    .btn.small {
+      padding: 0.5rem 0.9rem;
+      font-size: 0.78rem;
+    }
+
+    #name-error {
+      color: #a14545;
+      font-size: 0.82rem;
+      margin-top: 0.6rem;
+      min-height: 1.2em;
+      font-family: var(--font);
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 2rem;
+      font-family: var(--font);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      color: var(--sage-dark);
+      opacity: 0.7;
+    }
+
+    /* ---------- MAIN APP ---------- */
+    #app {
+      display: none;
+    }
+
+    #app.visible {
+      display: block;
+    }
+
+    header.site-header {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: var(--nav-bg);
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid var(--line);
+      padding: 0.9rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    header.site-header .brand {
+      font-family: var(--serif);
+      font-weight: 700;
+      font-size: 1.15rem;
+      white-space: nowrap;
+    }
+
+    header.site-header .brand em {
+      font-style: italic;
+      color: var(--sage-dark);
+    }
+
+    header.site-header .who {
+      font-family: var(--font);
+      font-size: 0.78rem;
+      opacity: 0.7;
+    }
+
+    header.site-header .header-right {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+
+    #theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--paper);
+      border: 1.5px solid var(--line);
+      color: var(--ink);
+      font-family: var(--font);
+      font-size: 0.76rem;
+      padding: 0.45rem 0.8rem;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    #theme-toggle:hover {
+      background: var(--track-bg);
+    }
+
+    /* ---------- PRIMARY PAGE NAV (real pages, not scroll anchors) ---------- */
+    nav.page-nav {
+      position: sticky;
+      top: var(--header-h);
+      z-index: 29;
+      background: var(--nav-bg);
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      gap: 0.4rem;
+      padding: 0.6rem 1.5rem;
+      overflow-x: auto;
+      scrollbar-width: thin;
+    }
+
+    nav.page-nav button {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-family: var(--font);
+      font-size: 0.78rem;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      padding: 0.45rem 0.9rem;
+      border-radius: 999px;
+      color: var(--ink);
+      opacity: 0.62;
+      background: none;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: opacity 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+    }
+
+    nav.page-nav button svg {
+      width: 14px;
+      height: 14px;
+      opacity: 0.85;
+    }
+
+    nav.page-nav button:hover {
+      opacity: 1;
+      background: var(--track-bg);
+    }
+
+    nav.page-nav button.active {
+      opacity: 1;
+      color: var(--sage-dark);
+      border-color: var(--line);
+      background: var(--paper);
+      font-weight: 600;
+    }
+
+    main {
+      max-width: 64rem;
+      margin: 0 auto;
+    }
+
+    .page {
+      display: none;
+      padding: 0 1.5rem;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    /* ---------- SCROLL/PAGE REVEAL ---------- */
+    .reveal {
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .reveal.in-view {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .page-head {
+      padding: 2.6rem 0 0;
+    }
+
+    .section-label {
+      font-family: var(--font);
+      font-size: 0.72rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--sage-dark);
+      margin-bottom: 0.8rem;
+      display: block;
+    }
+
+    .section-title {
+      font-family: var(--serif);
+      font-size: clamp(1.7rem, 4vw, 2.4rem);
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+    }
+
+    .section-sub {
+      max-width: 38rem;
+      opacity: 0.72;
+      margin-bottom: 2rem;
+      line-height: 1.55;
+    }
+
+    .page-body {
+      padding-bottom: 4.5rem;
+    }
+
+    .page-actions {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      align-items: center;
+      margin: 1.4rem 0 0.4rem;
+      position: relative;
+    }
+
+    /* ---------- DOWNLOAD MENU ---------- */
+    .download-wrap {
+      position: relative;
+    }
+
+    .download-menu {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      z-index: 15;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      padding: 0.35rem;
+      display: none;
+      min-width: 9.5rem;
+    }
+
+    .download-menu.open {
+      display: block;
+    }
+
+    .download-menu button {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      width: 100%;
+      text-align: left;
+      background: none;
+      border: none;
+      font-family: var(--font);
+      font-size: 0.8rem;
+      color: var(--ink);
+      padding: 0.5rem 0.6rem;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .download-menu button:hover {
+      background: var(--track-bg);
+    }
+
+    #dl-toast {
+      position: fixed;
+      right: 1.4rem;
+      bottom: 1.4rem;
+      z-index: 60;
+      max-width: 16rem;
+      font-family: var(--font);
+      font-size: 0.74rem;
+      background: var(--paper);
+      color: var(--ink);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 0.7rem 0.9rem;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transform: translateY(6px);
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    #dl-toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ---------- HERO / WELCOME ---------- */
+    #welcome-content {
+      padding-top: 0.5rem;
+    }
+
+    .hero-number {
+      font-family: var(--serif);
+      font-weight: 700;
+      font-size: clamp(3rem, 11vw, 6.5rem);
+      line-height: 0.92;
+      color: var(--sage-dark);
+    }
+
+    .hero-copy {
+      font-size: 1.2rem;
+      max-width: 36rem;
+      margin-top: 1rem;
+      line-height: 1.55;
+    }
+
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+      gap: 1px;
+      background: var(--line);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-top: 2.2rem;
+    }
+
+    .stat-cell {
+      background: var(--paper);
+      padding: 1.3rem 1.2rem;
+    }
+
+    .stat-cell .num {
+      font-family: var(--font);
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .stat-cell .lbl {
+      font-size: 0.78rem;
+      opacity: 0.62;
+      margin-top: 0.2rem;
+    }
+
+    /* ---------- PERSONA TICKET STUB (theme-invariant) ---------- */
+    .ticket {
+      position: relative;
+      background: var(--ticket-bg);
+      color: var(--ticket-ink);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      overflow: hidden;
+      margin-top: 2.2rem;
+    }
+
+    .ticket-main {
+      padding: 2.2rem 2rem;
+    }
+
+    .ticket-stub {
+      padding: 2.2rem 1.6rem;
+      border-left: 2px dashed rgba(246, 247, 240, 0.35);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-width: 9rem;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.15);
+    }
+
+    .ticket .eyebrow-light {
+      font-family: var(--font);
+      font-size: 0.7rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      opacity: 0.7;
+      margin-bottom: 0.5rem;
+    }
+
+    .persona-name {
+      font-family: var(--serif);
+      font-weight: 700;
+      font-style: italic;
+      font-size: clamp(1.8rem, 4.5vw, 2.6rem);
+      margin-bottom: 0.6rem;
+    }
+
+    .persona-sub {
+      font-family: var(--font);
+      font-size: 0.85rem;
+      opacity: 0.88;
+      line-height: 1.5;
+      max-width: 28rem;
+    }
+
+    .persona-secondary {
+      display: inline-block;
+      margin-top: 1rem;
+      font-family: var(--font);
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      padding: 0.35rem 0.7rem;
+      border: 1px solid rgba(246, 247, 240, 0.4);
+      border-radius: 999px;
+    }
+
+    .ticket-stub .mono {
+      font-size: 0.68rem;
+      opacity: 0.75;
+      letter-spacing: 0.08em;
+    }
+
+    .ticket-stub .big-id {
+      font-family: var(--font);
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 0.4rem 0;
+    }
+
+    @media (max-width:34rem) {
+      .ticket {
+        grid-template-columns: 1fr;
+      }
+
+      .ticket-stub {
+        border-left: none;
+        border-top: 2px dashed rgba(246, 247, 240, 0.35);
+      }
+    }
+
+    /* ---------- CAROUSEL (shared: Insights + Rotation) ---------- */
+    .carousel {
+      position: relative;
+      padding: 0 3.4rem;
+    }
+
+    .carousel-viewport {
+      overflow: hidden;
+      border-radius: var(--radius);
+    }
+
+    .carousel-track {
+      display: flex;
+      transition: transform 0.4s cubic-bezier(.2, .8, .2, 1);
+    }
+
+    .carousel-slide {
+      flex: 0 0 100%;
+      min-width: 100%;
+    }
+
+    .carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 2.6rem;
+      height: 2.6rem;
+      border-radius: 50%;
+      background: var(--paper);
+      border: 1.5px solid var(--line);
+      color: var(--sage-dark);
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: background 0.15s ease, transform 0.15s ease;
+      z-index: 5;
+    }
+
+    .carousel-btn:hover {
+      background: var(--track-bg);
+    }
+
+    .carousel-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .carousel-btn.prev {
+      left: 0;
+    }
+
+    .carousel-btn.next {
+      right: 0;
+    }
+
+    .carousel-meta {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      margin-top: 1.1rem;
+      font-family: var(--font);
+      font-size: 0.72rem;
+      color: var(--sage-dark);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .carousel-dots {
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    .carousel-dots span {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--line);
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .carousel-dots span.active {
+      background: var(--sage-dark);
+      transform: scale(1.3);
+    }
+
+    /* ---------- CHARTS ---------- */
+    .chart-card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 1.6rem 1.6rem 1.2rem;
+      box-shadow: var(--shadow);
+    }
+
+    .chart-eyebrow-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.2rem;
+    }
+
+    .bar-row {
+      display: grid;
+      grid-template-columns: 9.5rem 1fr 3.2rem;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 0.55rem 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 0.86rem;
+    }
+
+    .bar-row:last-child {
+      border-bottom: none;
+    }
+
+    .bar-rank {
+      font-family: var(--font);
+      color: var(--sage-dark);
+      font-size: 0.75rem;
+    }
+
+    .bar-name {
+      font-weight: 600;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .bar-track {
+      height: 0.85rem;
+      background: var(--track-bg);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--sage-mid), var(--sage-dark));
+      border-radius: 4px;
+      transition: width 0.9s cubic-bezier(.2, .8, .2, 1);
+      width: 0;
+    }
+
+    .bar-score {
+      font-family: var(--font);
+      text-align: right;
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    .yearly-chart {
+      display: flex;
+      align-items: flex-end;
+      gap: 0.6rem;
+      height: 14rem;
+      padding-top: 1rem;
+    }
+
+    .year-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      height: 100%;
+    }
+
+    .year-bar {
+      width: 100%;
+      max-width: 2.6rem;
+      background: linear-gradient(180deg, var(--peach), var(--sage-dark));
+      border-radius: 5px 5px 2px 2px;
+      transition: height 1s cubic-bezier(.2, .8, .2, 1);
+      height: 0;
+    }
+
+    .year-val {
+      font-family: var(--font);
+      font-size: 0.68rem;
+      margin-top: 0.4rem;
+      color: var(--ink);
+      opacity: 0.75;
+    }
+
+    .year-lbl {
+      font-family: var(--font);
+      font-size: 0.68rem;
+      margin-top: 0.2rem;
+      color: var(--sage-dark);
+    }
+
+    /* ---------- HEATMAP (User Behaviour) ---------- */
+    .heat-wrap {
+      overflow-x: auto;
+    }
+
+    .heat-grid {
+      display: grid;
+      grid-template-columns: 2.6rem repeat(24, minmax(1.7rem, 1fr));
+      gap: 4px;
+      min-width: 40rem;
+    }
+
+    .heat-hourlbl {
+      grid-row: 1;
+      font-family: var(--font);
+      font-size: 0.62rem;
+      color: var(--ink);
+      opacity: 0.5;
+      text-align: center;
+      align-self: end;
+      padding-bottom: 2px;
+    }
+
+    .heat-daylbl {
+      font-family: var(--font);
+      font-size: 0.72rem;
+      color: var(--ink);
+      opacity: 0.7;
+      display: flex;
+      align-items: center;
+    }
+
+    .heat-cell {
+      aspect-ratio: 1;
+      border-radius: 5px;
+      cursor: pointer;
+      position: relative;
+      border: 1px solid var(--line);
+    }
+
+    .heat-cell:hover {
+      outline: 1.5px solid var(--sage-dark);
+    }
+
+    .heat-legend {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-top: 1.1rem;
+      font-family: var(--font);
+      font-size: 0.7rem;
+      opacity: 0.7;
+    }
+
+    .heat-legend .sw {
+      width: 0.85rem;
+      height: 0.85rem;
+      border-radius: 3px;
+      border: 1px solid var(--line);
+    }
+
+    #heat-tooltip {
+      position: fixed;
+      pointer-events: none;
+      background: var(--ticket-bg);
+      color: var(--ticket-ink);
+      font-family: var(--font);
+      font-size: 0.72rem;
+      padding: 0.45rem 0.65rem;
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transition: opacity 0.1s ease;
+      z-index: 50;
+      white-space: nowrap;
+    }
+
+    #heat-tooltip.show {
+      opacity: 1;
+    }
+
+    #heat-tooltip .tv {
+      font-weight: 700;
+      color: var(--peach);
+    }
+
+    /* ---------- HEAVY ROTATION (tracks/albums with art frames) ---------- */
+    .rotation-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .rotation-row {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+      padding: 0.65rem 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .rotation-row:last-child {
+      border-bottom: none;
+    }
+
+    .art-frame {
+      flex: none;
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--ticket-ink);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+    }
+
+    .art-frame.sm {
+      width: 2.6rem;
+      height: 2.6rem;
+    }
+
+    .art-frame.lg {
+      width: 100%;
+      aspect-ratio: 1;
+      border-radius: 10px;
+      margin-bottom: 0.7rem;
+    }
+
+    .art-frame .mono {
+      position: relative;
+      z-index: 2;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .art-frame.sm .mono {
+      font-size: 0.82rem;
+    }
+
+    .art-frame.lg .mono {
+      font-size: 1.6rem;
+    }
+
+    .art-frame svg {
+      position: absolute;
+      opacity: 0.28;
+      z-index: 1;
+    }
+
+    .art-frame.sm svg {
+      width: 60%;
+      height: 60%;
+    }
+
+    .art-frame.lg svg {
+      width: 46%;
+      height: 46%;
+    }
+
+    .rotation-main {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .rotation-main .name {
+      font-weight: 600;
+      font-size: 0.92rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .rotation-main .sub {
+      opacity: 0.6;
+      font-size: 0.78rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .rotation-val {
+      font-family: var(--font);
+      font-size: 0.8rem;
+      color: var(--sage-dark);
+      white-space: nowrap;
+      flex: none;
+    }
+
+    .rotation-rank {
+      font-family: var(--font);
+      color: var(--sage-dark);
+      font-size: 0.72rem;
+      flex: none;
+      width: 1.3rem;
+    }
+
+    .album-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+      gap: 1.1rem;
+    }
+
+    .album-card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 0.7rem;
+      box-shadow: var(--shadow);
+    }
+
+    .album-card .name {
+      font-weight: 600;
+      font-size: 0.84rem;
+      line-height: 1.3;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    .album-card .sub {
+      font-size: 0.74rem;
+      opacity: 0.6;
+      margin-top: 0.15rem;
+    }
+
+    .album-card .val {
+      font-family: var(--font);
+      font-size: 0.72rem;
+      color: var(--sage-dark);
+      margin-top: 0.35rem;
+    }
+
+    .note {
+      background: var(--track-bg);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 0.9rem 1.1rem;
+      font-size: 0.82rem;
+      line-height: 1.5;
+      margin-top: 1.6rem;
+    }
+
+    .note strong {
+      color: var(--sage-dark);
+    }
+
+    /* ---------- BACKSTAGE PASS (fixed tier ladder) ---------- */
+    .pass-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(17.5rem, 1fr));
+      gap: 1rem;
+    }
+
+    .pass-card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.3rem 1.4rem;
+    }
+
+    .pass-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 0.6rem;
+      margin-bottom: 0.15rem;
+    }
+
+    .pass-head .aname {
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .pass-head .astreams {
+      font-family: var(--font);
+      font-size: 0.72rem;
+      opacity: 0.6;
+      white-space: nowrap;
+    }
+
+    .pass-current {
+      font-family: var(--font);
+      font-size: 0.7rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--sage-dark);
+      margin-bottom: 0.9rem;
+    }
+
+    .tier-ladder {
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+    }
+
+    .tier-row {
+      display: grid;
+      grid-template-columns: 1.6rem 1fr auto;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.5rem 0.6rem;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+    }
+
+    .tier-row.unlocked {
+      background: var(--track-bg);
+    }
+
+    .tier-row.locked {
+      opacity: 0.5;
+    }
+
+    .tier-badge {
+      width: 1.6rem;
+      height: 1.6rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      flex: none;
+    }
+
+    .tier-row[data-tier="bronze"] .tier-badge {
+      background: #CD9564;
+      color: #fff;
+    }
+
+    .tier-row[data-tier="silver"] .tier-badge {
+      background: #B9BFC6;
+      color: #2E3320;
+    }
+
+    .tier-row[data-tier="gold"] .tier-badge {
+      background: #E7C26B;
+      color: #2E3320;
+    }
+
+    .tier-row.locked .tier-badge {
+      background: var(--line);
+      color: var(--ink);
+    }
+
+    .tier-info .tname {
+      font-weight: 700;
+      font-size: 0.8rem;
+    }
+
+    .tier-info .treward {
+      font-size: 0.74rem;
+      opacity: 0.72;
+      line-height: 1.35;
+      margin-top: 0.05rem;
+    }
+
+    .tier-code {
+      font-family: var(--font);
+      font-weight: 600;
+      font-size: 0.74rem;
+      letter-spacing: 0.04em;
+      background: var(--paper);
+      color: var(--sage-dark);
+      border: 1px dashed var(--sage-dark);
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .tier-code.copied::after {
+      content: " ✓";
+    }
+
+    .tier-lockednote {
+      font-family: var(--font);
+      font-size: 0.68rem;
+      opacity: 0.55;
+      white-space: nowrap;
+    }
+
+    .pass-progress {
+      margin-top: 0.9rem;
+    }
+
+    .pass-progress .ptrack {
+      height: 0.4rem;
+      background: var(--track-bg);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .pass-progress .pfill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--peach), var(--sage-dark));
+      border-radius: 4px;
+      transition: width 0.8s cubic-bezier(.2, .8, .2, 1);
+      width: 0;
+    }
+
+    .pass-progress .ptext {
+      font-family: var(--font);
+      font-size: 0.68rem;
+      opacity: 0.65;
+      margin-top: 0.4rem;
+    }
+
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 2rem 1.5rem;
+      text-align: center;
+    }
+
+    footer .foot-note {
+      max-width: 34rem;
+      margin: 0 auto;
+      font-size: 0.78rem;
+      opacity: 0.6;
+      line-height: 1.5;
+    }
+  </style>
 </head>
+
 <body>
 
-<!-- ============================================================ -->
-<!-- LANDING SCREEN                                                 -->
-<!-- ============================================================ -->
-<div id="landing">
-  <span class="eyebrow">a data-driven listening portrait</span>
-  <div class="logo">bug<em>bytes</em></div>
-  <p class="tagline">Years of plays, skips, and 3am replays — turned into a portrait of how you actually listen. Type your name to open your copy.</p>
-  <form id="name-form">
-    <input id="name-input" type="text" placeholder="your name or username" maxlength="24" autocomplete="off">
-    <button type="submit" class="btn">Open my Bug Bytes →</button>
-  </form>
-  <div id="name-error"></div>
-  <div class="scroll-hint">built from one real listening history</div>
-</div>
+  <!-- ============================================================ -->
+  <!-- LANDING SCREEN                                                 -->
+  <!-- ============================================================ -->
+  <div id="landing">
+    <span class="eyebrow">a data-driven listening portrait</span>
+    <div class="logo">bug<em>bytes</em></div>
+    <p class="tagline">Years of plays, skips, and 3am replays — turned into a portrait of how you actually listen. Type
+      your name to open your copy.</p>
+    <form id="name-form">
+      <input id="name-input" type="text" placeholder="your name or username" maxlength="24" autocomplete="off">
+      <button type="submit" class="btn">Open my Bug Bytes →</button>
+    </form>
+    <div id="name-error"></div>
+    <div class="scroll-hint">built from one real listening history</div>
+  </div>
 
-<!-- ============================================================ -->
-<!-- MAIN APP                                                       -->
-<!-- ============================================================ -->
-<div id="app">
-  <header class="site-header">
-    <div class="brand">bug<em>bytes</em></div>
-    <div class="header-right">
-      <span class="who mono" id="nav-who"></span>
-      <button id="theme-toggle" type="button" aria-pressed="false">
-        <span id="theme-icon">🌙</span><span id="theme-label">Dark mode</span>
+  <!-- ============================================================ -->
+  <!-- MAIN APP                                                       -->
+  <!-- ============================================================ -->
+  <div id="app">
+    <header class="site-header">
+      <div class="brand">bug<em>bytes</em></div>
+      <div class="header-right">
+        <span class="who mono" id="nav-who"></span>
+        <button id="theme-toggle" type="button" aria-pressed="false">
+          <span id="theme-icon">🌙</span><span id="theme-label">Dark mode</span>
+        </button>
+      </div>
+    </header>
+
+    <nav class="page-nav" id="page-nav">
+      <button type="button" data-page="welcome" class="active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M3 11l9-8 9 8" />
+          <path d="M5 10v10h14V10" />
+        </svg>Welcome
       </button>
-    </div>
-  </header>
+      <button type="button" data-page="insights">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M4 20V10M12 20V4M20 20v-7" />
+        </svg>Listening Insights
+      </button>
+      <button type="button" data-page="rotation">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="12" cy="12" r="9" />
+          <circle cx="12" cy="12" r="2.4" />
+        </svg>Heavy Rotation
+      </button>
+      <button type="button" data-page="backstage">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path
+            d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4Z" />
+        </svg>Backstage Pass
+      </button>
+    </nav>
 
-  <nav class="page-nav" id="page-nav">
-    <button type="button" data-page="welcome" class="active">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>Welcome
-    </button>
-    <button type="button" data-page="insights">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>Listening Insights
-    </button>
-    <button type="button" data-page="rotation">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.4"/></svg>Heavy Rotation
-    </button>
-    <button type="button" data-page="backstage">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4Z"/></svg>Backstage Pass
-    </button>
-  </nav>
+    <main>
 
-  <main>
+      <!-- ============================================================ -->
+      <!-- PAGE 1: WELCOME  (Wrap Up + Persona)                          -->
+      <!-- ============================================================ -->
+      <section class="page active" data-page="welcome">
+        <div id="welcome-content">
+          <div class="page-head reveal">
+            <span class="section-label">Wrap Up</span>
+            <div class="hero-number" id="hero-hours">— hrs</div>
+            <p class="hero-copy" id="hero-copy"></p>
+            <div class="stat-row" id="hero-stats"></div>
+          </div>
 
-    <!-- ============================================================ -->
-    <!-- PAGE 1: WELCOME  (Wrap Up + Persona)                          -->
-    <!-- ============================================================ -->
-    <section class="page active" data-page="welcome">
-      <div id="welcome-content">
+          <div class="page-body reveal">
+            <span class="section-label" style="margin-top:2.6rem;">Your Listening Persona</span>
+            <div class="ticket">
+              <div class="ticket-main">
+                <div class="eyebrow-light">Primary Trait</div>
+                <div class="persona-name" id="persona-primary">—</div>
+                <div class="persona-sub" id="persona-reason"></div>
+                <div class="persona-secondary" id="persona-secondary" style="display:none;"></div>
+              </div>
+              <div class="ticket-stub">
+                <div class="mono">BB-ID</div>
+                <div class="big-id" id="echo-id">····</div>
+                <div class="mono" id="stub-range"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="page-actions">
+          <div class="download-wrap">
+            <button type="button" class="btn secondary small" data-dl-toggle="welcome-menu">⬇ Download this
+              page</button>
+            <div class="download-menu" id="welcome-menu">
+              <button type="button" data-dl="png" data-target="welcome-content" data-name="bug-bytes-welcome">PNG
+                image</button>
+              <button type="button" data-dl="jpeg" data-target="welcome-content" data-name="bug-bytes-welcome">JPEG
+                image</button>
+              <button type="button" data-dl="pdf" data-target="welcome-content" data-name="bug-bytes-welcome">PDF
+                document</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- PAGE 2: LISTENING INSIGHTS  (Chart 01 / 02 / 03 carousel)     -->
+      <!-- ============================================================ -->
+      <section class="page" data-page="insights">
         <div class="page-head reveal">
-          <span class="section-label">Wrap Up</span>
-          <div class="hero-number" id="hero-hours">— hrs</div>
-          <p class="hero-copy" id="hero-copy"></p>
-          <div class="stat-row" id="hero-stats"></div>
+          <span class="section-label">Listening Insights</span>
+          <h2 class="section-title">Three Charts, One Listening History</h2>
+          <p class="section-sub">Use the arrows to move between your top artists, your yearly hours, and the
+            hour-by-hour rhythm of your week.</p>
         </div>
 
         <div class="page-body reveal">
-          <span class="section-label" style="margin-top:2.6rem;">Your Listening Persona</span>
-          <div class="ticket">
-            <div class="ticket-main">
-              <div class="eyebrow-light">Primary Trait</div>
-              <div class="persona-name" id="persona-primary">—</div>
-              <div class="persona-sub" id="persona-reason"></div>
-              <div class="persona-secondary" id="persona-secondary" style="display:none;"></div>
-            </div>
-            <div class="ticket-stub">
-              <div class="mono">BB-ID</div>
-              <div class="big-id" id="echo-id">····</div>
-              <div class="mono" id="stub-range"></div>
-            </div>
-          </div>
-        </div>
-      </div>
+          <div class="carousel" id="insights-carousel">
+            <button type="button" class="carousel-btn prev" data-carousel="insights"
+              aria-label="Previous chart">‹</button>
+            <div class="carousel-viewport">
+              <div class="carousel-track" id="insights-track">
 
-      <div class="page-actions">
-        <div class="download-wrap">
-          <button type="button" class="btn secondary small" data-dl-toggle="welcome-menu">⬇ Download this page</button>
-          <div class="download-menu" id="welcome-menu">
-            <button type="button" data-dl="png" data-target="welcome-content" data-name="bug-bytes-welcome">PNG image</button>
-            <button type="button" data-dl="jpeg" data-target="welcome-content" data-name="bug-bytes-welcome">JPEG image</button>
-            <button type="button" data-dl="pdf" data-target="welcome-content" data-name="bug-bytes-welcome">PDF document</button>
-          </div>
-        </div>
-      </div>
-    </section>
+                <!-- CHART 01 -->
+                <div class="carousel-slide">
+                  <span class="section-label">Chart 01</span>
+                  <h3 class="section-title" style="font-size:1.4rem;">Top 10 Artists, by Engagement Score</h3>
+                  <p class="section-sub" style="margin-bottom:1.2rem;">Not just play count. Engagement Score blends
+                    listening volume with completion rate, how often tracks were actively chosen (vs. autoplayed), and
+                    how rarely they got skipped in the first 30 seconds.</p>
+                  <div class="chart-card" id="artist-chart"></div>
+                </div>
 
-    <!-- ============================================================ -->
-    <!-- PAGE 2: LISTENING INSIGHTS  (Chart 01 / 02 / 03 carousel)     -->
-    <!-- ============================================================ -->
-    <section class="page" data-page="insights">
-      <div class="page-head reveal">
-        <span class="section-label">Listening Insights</span>
-        <h2 class="section-title">Three Charts, One Listening History</h2>
-        <p class="section-sub">Use the arrows to move between your top artists, your yearly hours, and the hour-by-hour rhythm of your week.</p>
-      </div>
-
-      <div class="page-body reveal">
-        <div class="carousel" id="insights-carousel">
-          <button type="button" class="carousel-btn prev" data-carousel="insights" aria-label="Previous chart">‹</button>
-          <div class="carousel-viewport">
-            <div class="carousel-track" id="insights-track">
-
-              <!-- CHART 01 -->
-              <div class="carousel-slide">
-                <span class="section-label">Chart 01</span>
-                <h3 class="section-title" style="font-size:1.4rem;">Top 10 Artists, by Engagement Score</h3>
-                <p class="section-sub" style="margin-bottom:1.2rem;">Not just play count. Engagement Score blends listening volume with completion rate, how often tracks were actively chosen (vs. autoplayed), and how rarely they got skipped in the first 30 seconds.</p>
-                <div class="chart-card" id="artist-chart"></div>
-              </div>
-
-              <!-- CHART 02 -->
-              <div class="carousel-slide">
-                <span class="section-label">Chart 02</span>
-                <h3 class="section-title" style="font-size:1.4rem;">Yearly Listening Hours</h3>
-                <p class="section-sub" style="margin-bottom:1.2rem;">One graph, every year on record. Every rise and dip below is a real change in a real life.</p>
-                <div class="chart-card"><div class="yearly-chart" id="yearly-chart"></div></div>
-              </div>
-
-              <!-- CHART 03 -->
-              <div class="carousel-slide">
-                <span class="section-label">Chart 03 · Listening Insights</span>
-                <h3 class="section-title serif" style="font-size:1.5rem;">User Behaviour: When You Actually Listen</h3>
-                <p class="section-sub" style="margin-bottom:1.2rem;">Minutes played by day of week and hour of day. Darker = more listening happened in that hour.</p>
-                <div class="chart-card">
-                  <div class="heat-wrap"><div class="heat-grid" id="heat-grid"></div></div>
-                  <div class="heat-legend">
-                    <span>Less</span>
-                    <span class="sw" style="background:var(--heat-0)"></span>
-                    <span class="sw" style="background:var(--heat-1)"></span>
-                    <span class="sw" style="background:var(--heat-2)"></span>
-                    <span class="sw" style="background:var(--heat-3)"></span>
-                    <span class="sw" style="background:var(--heat-4)"></span>
-                    <span>More</span>
+                <!-- CHART 02 -->
+                <div class="carousel-slide">
+                  <span class="section-label">Chart 02</span>
+                  <h3 class="section-title" style="font-size:1.4rem;">Yearly Listening Hours</h3>
+                  <p class="section-sub" style="margin-bottom:1.2rem;">One graph, every year on record. Every rise and
+                    dip below is a real change in a real life.</p>
+                  <div class="chart-card">
+                    <div class="yearly-chart" id="yearly-chart"></div>
                   </div>
                 </div>
-              </div>
 
+                <!-- CHART 03 -->
+                <div class="carousel-slide">
+                  <span class="section-label">Chart 03 · Listening Insights</span>
+                  <h3 class="section-title serif" style="font-size:1.5rem;">User Behaviour: When You Actually Listen
+                  </h3>
+                  <p class="section-sub" style="margin-bottom:1.2rem;">Minutes played by day of week and hour of day.
+                    Darker = more listening happened in that hour.</p>
+                  <div class="chart-card">
+                    <div class="heat-wrap">
+                      <div class="heat-grid" id="heat-grid"></div>
+                    </div>
+                    <div class="heat-legend">
+                      <span>Less</span>
+                      <span class="sw" style="background:var(--heat-0)"></span>
+                      <span class="sw" style="background:var(--heat-1)"></span>
+                      <span class="sw" style="background:var(--heat-2)"></span>
+                      <span class="sw" style="background:var(--heat-3)"></span>
+                      <span class="sw" style="background:var(--heat-4)"></span>
+                      <span>More</span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <button type="button" class="carousel-btn next" data-carousel="insights" aria-label="Next chart">›</button>
+          </div>
+          <div class="carousel-meta">
+            <span id="insights-label">Chart 01 of 3</span>
+            <span class="carousel-dots" id="insights-dots"></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- PAGE 3: HEAVY ROTATION  (Top Tracks / Top Albums carousel)    -->
+      <!-- ============================================================ -->
+      <section class="page" data-page="rotation">
+        <div id="rotation-content">
+          <div class="page-head reveal">
+            <span class="section-label">User Profile · Heavy Rotation</span>
+            <h2 class="section-title">Frequent Songs &amp; Albums</h2>
+            <p class="section-sub">Ranked by total minutes played, not just play count — a 20-second clip and a 4-minute
+              listen don't count the same.</p>
+          </div>
+
+          <div class="page-body reveal">
+            <div class="carousel" id="rotation-carousel">
+              <button type="button" class="carousel-btn prev" data-carousel="rotation" aria-label="Previous">‹</button>
+              <div class="carousel-viewport">
+                <div class="carousel-track" id="rotation-track">
+
+                  <!-- TOP TRACKS -->
+                  <div class="carousel-slide">
+                    <h3 class="section-title" style="font-size:1.3rem;margin-bottom:1rem;">Top Tracks</h3>
+                    <div class="chart-card">
+                      <div class="rotation-list" id="track-list"></div>
+                    </div>
+                  </div>
+
+                  <!-- TOP ALBUMS -->
+                  <div class="carousel-slide">
+                    <h3 class="section-title" style="font-size:1.3rem;margin-bottom:1rem;">Top Albums</h3>
+                    <div class="album-grid" id="album-list"></div>
+                  </div>
+
+                </div>
+              </div>
+              <button type="button" class="carousel-btn next" data-carousel="rotation" aria-label="Next">›</button>
+            </div>
+            <div class="carousel-meta">
+              <span id="rotation-label">Top Tracks</span>
+              <span class="carousel-dots" id="rotation-dots"></span>
+            </div>
+
+            <div class="note">
+              <strong>Note on genres and cover art:</strong> this Spotify export doesn't include genre metadata or
+              licensed cover art (both would need a live lookup against Spotify's catalog API). The frames above are
+              stylized placeholders generated from each title, not the real artwork.
             </div>
           </div>
-          <button type="button" class="carousel-btn next" data-carousel="insights" aria-label="Next chart">›</button>
         </div>
-        <div class="carousel-meta">
-          <span id="insights-label">Chart 01 of 3</span>
-          <span class="carousel-dots" id="insights-dots"></span>
-        </div>
-      </div>
-    </section>
 
-    <!-- ============================================================ -->
-    <!-- PAGE 3: HEAVY ROTATION  (Top Tracks / Top Albums carousel)    -->
-    <!-- ============================================================ -->
-    <section class="page" data-page="rotation">
-      <div id="rotation-content">
+        <div class="page-actions">
+          <div class="download-wrap">
+            <button type="button" class="btn secondary small" data-dl-toggle="rotation-menu">⬇ Download this
+              page</button>
+            <div class="download-menu" id="rotation-menu">
+              <button type="button" data-dl="png" data-target="rotation-content"
+                data-name="bug-bytes-heavy-rotation">PNG image</button>
+              <button type="button" data-dl="jpeg" data-target="rotation-content"
+                data-name="bug-bytes-heavy-rotation">JPEG image</button>
+              <button type="button" data-dl="pdf" data-target="rotation-content"
+                data-name="bug-bytes-heavy-rotation">PDF document</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- PAGE 4: BACKSTAGE PASS  (fixed Bronze/Silver/Gold ladder)     -->
+      <!-- ============================================================ -->
+      <section class="page" data-page="backstage">
         <div class="page-head reveal">
-          <span class="section-label">User Profile · Heavy Rotation</span>
-          <h2 class="section-title">Frequent Songs &amp; Albums</h2>
-          <p class="section-sub">Ranked by total minutes played, not just play count — a 20-second clip and a 4-minute listen don't count the same.</p>
+          <span class="section-label">Superfan Unlock</span>
+          <h2 class="section-title">Backstage Pass: Stream Threshold → Exclusive Access</h2>
+          <p class="section-sub">Every artist's tier below is fixed by their real play count in your history — Bronze,
+            Silver, and Gold each unlock a different, more exclusive reward. There's nothing to slide or browse into
+            early; you only ever see what you've actually earned.</p>
         </div>
 
         <div class="page-body reveal">
-          <div class="carousel" id="rotation-carousel">
-            <button type="button" class="carousel-btn prev" data-carousel="rotation" aria-label="Previous">‹</button>
-            <div class="carousel-viewport">
-              <div class="carousel-track" id="rotation-track">
-
-                <!-- TOP TRACKS -->
-                <div class="carousel-slide">
-                  <h3 class="section-title" style="font-size:1.3rem;margin-bottom:1rem;">Top Tracks</h3>
-                  <div class="chart-card"><div class="rotation-list" id="track-list"></div></div>
-                </div>
-
-                <!-- TOP ALBUMS -->
-                <div class="carousel-slide">
-                  <h3 class="section-title" style="font-size:1.3rem;margin-bottom:1rem;">Top Albums</h3>
-                  <div class="album-grid" id="album-list"></div>
-                </div>
-
-              </div>
-            </div>
-            <button type="button" class="carousel-btn next" data-carousel="rotation" aria-label="Next">›</button>
-          </div>
-          <div class="carousel-meta">
-            <span id="rotation-label">Top Tracks</span>
-            <span class="carousel-dots" id="rotation-dots"></span>
-          </div>
-
+          <div class="pass-grid" id="pass-grid"></div>
           <div class="note">
-            <strong>Note on genres and cover art:</strong> this Spotify export doesn't include genre metadata or licensed cover art (both would need a live lookup against Spotify's catalog API). The frames above are stylized placeholders generated from each title, not the real artwork.
+            <strong>How tiers work:</strong> Bronze (5,000 streams) unlocks a 10% merch code. Silver (15,000) unlocks
+            access to an exclusive vinyl colorway. Gold (30,000) unlocks a single-use concert presale code. Tiers are
+            cumulative — reaching Silver keeps your Bronze reward too — and each artist's tier is computed once from
+            real data, not chosen by browsing.
+          </div>
+          <div class="note">
+            <strong>Assumption we're making:</strong> these thresholds read like a cross-platform popularity count, not
+            one person's personal plays — so we treat your own play count per artist as a personal superfan tier
+            instead. Codes are deterministic (same input → same code) but connect to no real store; every "unlock" here
+            is a mock UI state.
           </div>
         </div>
-      </div>
+      </section>
 
-      <div class="page-actions">
-        <div class="download-wrap">
-          <button type="button" class="btn secondary small" data-dl-toggle="rotation-menu">⬇ Download this page</button>
-          <div class="download-menu" id="rotation-menu">
-            <button type="button" data-dl="png" data-target="rotation-content" data-name="bug-bytes-heavy-rotation">PNG image</button>
-            <button type="button" data-dl="jpeg" data-target="rotation-content" data-name="bug-bytes-heavy-rotation">JPEG image</button>
-            <button type="button" data-dl="pdf" data-target="rotation-content" data-name="bug-bytes-heavy-rotation">PDF document</button>
-          </div>
-        </div>
-      </div>
-    </section>
+    </main>
 
-    <!-- ============================================================ -->
-    <!-- PAGE 4: BACKSTAGE PASS  (fixed Bronze/Silver/Gold ladder)     -->
-    <!-- ============================================================ -->
-    <section class="page" data-page="backstage">
-      <div class="page-head reveal">
-        <span class="section-label">Superfan Unlock</span>
-        <h2 class="section-title">Backstage Pass: Stream Threshold → Exclusive Access</h2>
-        <p class="section-sub">Every artist's tier below is fixed by their real play count in your history — Bronze, Silver, and Gold each unlock a different, more exclusive reward. There's nothing to slide or browse into early; you only ever see what you've actually earned.</p>
-      </div>
+    <footer>
+      <p class="foot-note">
+        Bug Bytes is a hackathon prototype built on one real Spotify export. Not affiliated with Spotify. Merch,
+        tickets, and promo codes shown are mock/demo — no real purchases occur.
+      </p>
+    </footer>
 
-      <div class="page-body reveal">
-        <div class="pass-grid" id="pass-grid"></div>
-        <div class="note">
-          <strong>How tiers work:</strong> Bronze (5,000 streams) unlocks a 10% merch code. Silver (15,000) unlocks access to an exclusive vinyl colorway. Gold (30,000) unlocks a single-use concert presale code. Tiers are cumulative — reaching Silver keeps your Bronze reward too — and each artist's tier is computed once from real data, not chosen by browsing.
-        </div>
-        <div class="note">
-          <strong>Assumption we're making:</strong> these thresholds read like a cross-platform popularity count, not one person's personal plays — so we treat your own play count per artist as a personal superfan tier instead. Codes are deterministic (same input → same code) but connect to no real store; every "unlock" here is a mock UI state.
-        </div>
-      </div>
-    </section>
+    <div id="heat-tooltip"><span id="heat-tooltip-day"></span> — <span class="tv" id="heat-tooltip-val"></span></div>
+    <div id="dl-toast" class="mono"></div>
+  </div>
 
-  </main>
-
-  <footer>
-    <p class="foot-note">
-      Bug Bytes is a hackathon prototype built on one real Spotify export. Not affiliated with Spotify. Merch, tickets, and promo codes shown are mock/demo — no real purchases occur.
-    </p>
-  </footer>
-
-  <div id="heat-tooltip"><span id="heat-tooltip-day"></span> — <span class="tv" id="heat-tooltip-val"></span></div>
-  <div id="dl-toast" class="mono"></div>
-</div>
-
-<script id="wrapped-data" type="application/json">
+  <script id="wrapped-data" type="application/json">
 {"summary":{"total_plays":148675,"total_hours":5288.7,"unique_artists":4113,"unique_tracks":13839,"unique_albums":7948,"date_start":"2013-07-08","date_end":"2024-12-15","years_covered":12},"top_artists":[{"rank":1,"artist":"The Killers","plays":6748,"hours":286.7,"engagement_score":78.8,"completion_rate":57.6},{"rank":2,"artist":"The Beatles","plays":13530,"hours":333.2,"engagement_score":77.6,"completion_rate":48.5},{"rank":3,"artist":"John Mayer","plays":4797,"hours":197.7,"engagement_score":74.3,"completion_rate":54.7},{"rank":4,"artist":"Howard Shore","plays":1445,"hours":96.9,"engagement_score":71.1,"completion_rate":72.2},{"rank":5,"artist":"Bob Dylan","plays":3790,"hours":156.2,"engagement_score":70.6,"completion_rate":46.9},{"rank":6,"artist":"The Strokes","plays":1784,"hours":85.8,"engagement_score":69.7,"completion_rate":64.2},{"rank":7,"artist":"Paul McCartney","plays":2685,"hours":98.6,"engagement_score":67.8,"completion_rate":54.7},{"rank":8,"artist":"Joaquín Sabina","plays":794,"hours":54.4,"engagement_score":67.5,"completion_rate":76.3},{"rank":9,"artist":"Kings of Leon","plays":1381,"hours":60.7,"engagement_score":64.9,"completion_rate":58.1},{"rank":10,"artist":"The Rolling Stones","plays":2367,"hours":84.1,"engagement_score":64.6,"completion_rate":44.4}],"top_tracks":[{"rank":1,"track":"Ode To The Mets","artist":"The Strokes","plays":203,"minutes":1100.0},{"rank":2,"track":"The Return of the King (feat. Sir James Galway, Viggo Mortensen and Renee Fleming)","artist":"Howard Shore","plays":120,"minutes":1073.5},{"rank":3,"track":"The Fellowship Reunited (feat. Sir James Galway, Viggo Mortensen and Renée Fleming)","artist":"Howard Shore","plays":78,"minutes":745.9},{"rank":4,"track":"19 Dias y 500 Noches - En Directo","artist":"Joaquín Sabina","plays":146,"minutes":706.5},{"rank":5,"track":"In the Blood","artist":"John Mayer","plays":180,"minutes":636.2},{"rank":6,"track":"Claudia's Theme - Version Eight","artist":"Lennie Niehaus","plays":123,"minutes":618.9},{"rank":7,"track":"Dying Breed","artist":"The Killers","plays":166,"minutes":603.0},{"rank":8,"track":"The Breaking of the Fellowship (feat. \"In Dreams\")","artist":"Howard Shore","plays":93,"minutes":600.1},{"rank":9,"track":"The Road Goes Ever On..., Pt. 1","artist":"Howard Shore","plays":120,"minutes":587.7},{"rank":10,"track":"All These Things That I've Done","artist":"The Killers","plays":136,"minutes":571.0}],"top_albums":[{"rank":1,"album":"The Beatles","artist":"The Beatles","plays":2050,"hours":51.5},{"rank":2,"album":"The New Abnormal","artist":"The Strokes","plays":719,"hours":49.8},{"rank":3,"album":"Imploding The Mirage","artist":"The Killers","plays":777,"hours":44.4},{"rank":4,"album":"Abbey Road","artist":"The Beatles","plays":1421,"hours":41.1},{"rank":5,"album":"Blood On The Tracks","artist":"Bob Dylan","plays":738,"hours":40.2},{"rank":6,"album":"Past Masters","artist":"The Beatles","plays":1667,"hours":40.2},{"rank":7,"album":"Hot Fuss","artist":"The Killers","plays":857,"hours":38.9},{"rank":8,"album":"The Wall","artist":"Pink Floyd","plays":1217,"hours":38.3},{"rank":9,"album":"Pressure Machine","artist":"The Killers","plays":561,"hours":31.5},{"rank":10,"album":"Where the Light Is: John Mayer Live In Los Angeles","artist":"John Mayer","plays":867,"hours":31.1}],"yearly_hours":[{"year":2013,"hours":7.8},{"year":2014,"hours":1.0},{"year":2015,"hours":59.3},{"year":2016,"hours":196.9},{"year":2017,"hours":668.8},{"year":2018,"hours":474.0},{"year":2019,"hours":479.2},{"year":2020,"hours":871.4},{"year":2021,"hours":891.5},{"year":2022,"hours":640.9},{"year":2023,"hours":515.1},{"year":2024,"hours":482.7}],"weekly_rhythm":{"labels":["Mon 00:00","Mon 01:00","Mon 02:00","Mon 03:00","Mon 04:00","Mon 05:00","Mon 06:00","Mon 07:00","Mon 08:00","Mon 09:00","Mon 10:00","Mon 11:00","Mon 12:00","Mon 13:00","Mon 14:00","Mon 15:00","Mon 16:00","Mon 17:00","Mon 18:00","Mon 19:00","Mon 20:00","Mon 21:00","Mon 22:00","Mon 23:00","Tue 00:00","Tue 01:00","Tue 02:00","Tue 03:00","Tue 04:00","Tue 05:00","Tue 06:00","Tue 07:00","Tue 08:00","Tue 09:00","Tue 10:00","Tue 11:00","Tue 12:00","Tue 13:00","Tue 14:00","Tue 15:00","Tue 16:00","Tue 17:00","Tue 18:00","Tue 19:00","Tue 20:00","Tue 21:00","Tue 22:00","Tue 23:00","Wed 00:00","Wed 01:00","Wed 02:00","Wed 03:00","Wed 04:00","Wed 05:00","Wed 06:00","Wed 07:00","Wed 08:00","Wed 09:00","Wed 10:00","Wed 11:00","Wed 12:00","Wed 13:00","Wed 14:00","Wed 15:00","Wed 16:00","Wed 17:00","Wed 18:00","Wed 19:00","Wed 20:00","Wed 21:00","Wed 22:00","Wed 23:00","Thu 00:00","Thu 01:00","Thu 02:00","Thu 03:00","Thu 04:00","Thu 05:00","Thu 06:00","Thu 07:00","Thu 08:00","Thu 09:00","Thu 10:00","Thu 11:00","Thu 12:00","Thu 13:00","Thu 14:00","Thu 15:00","Thu 16:00","Thu 17:00","Thu 18:00","Thu 19:00","Thu 20:00","Thu 21:00","Thu 22:00","Thu 23:00","Fri 00:00","Fri 01:00","Fri 02:00","Fri 03:00","Fri 04:00","Fri 05:00","Fri 06:00","Fri 07:00","Fri 08:00","Fri 09:00","Fri 10:00","Fri 11:00","Fri 12:00","Fri 13:00","Fri 14:00","Fri 15:00","Fri 16:00","Fri 17:00","Fri 18:00","Fri 19:00","Fri 20:00","Fri 21:00","Fri 22:00","Fri 23:00","Sat 00:00","Sat 01:00","Sat 02:00","Sat 03:00","Sat 04:00","Sat 05:00","Sat 06:00","Sat 07:00","Sat 08:00","Sat 09:00","Sat 10:00","Sat 11:00","Sat 12:00","Sat 13:00","Sat 14:00","Sat 15:00","Sat 16:00","Sat 17:00","Sat 18:00","Sat 19:00","Sat 20:00","Sat 21:00","Sat 22:00","Sat 23:00","Sun 00:00","Sun 01:00","Sun 02:00","Sun 03:00","Sun 04:00","Sun 05:00","Sun 06:00","Sun 07:00","Sun 08:00","Sun 09:00","Sun 10:00","Sun 11:00","Sun 12:00","Sun 13:00","Sun 14:00","Sun 15:00","Sun 16:00","Sun 17:00","Sun 18:00","Sun 19:00","Sun 20:00","Sun 21:00","Sun 22:00","Sun 23:00"],"plays":[1348,1157,1055,1161,767,1307,736,417,284,93,82,56,99,230,440,584,1117,1530,1450,1341,1519,1421,1180,1453,1666,1546,1310,1181,628,1025,655,614,251,186,135,150,39,284,611,684,1333,1540,1312,996,1105,908,734,1564,1378,1568,1645,1287,781,979,1341,506,234,131,61,83,142,330,488,605,1264,1779,1220,1059,1289,1473,1809,1789,1515,1174,965,1100,1079,930,1509,517,168,266,121,52,97,237,468,619,859,1241,1200,1476,1806,1020,1161,1554,1630,1270,1333,1466,1194,1265,1242,787,301,173,159,65,145,310,383,677,1313,1650,1966,1565,2161,1352,1453,1607,2028,1328,1398,1129,1048,714,962,782,455,335,262,111,125,142,112,237,419,830,812,849,1460,1350,1176,1300,1297,1337,1313,1154,848,928,922,788,605,503,387,385,77,103,211,193,305,445,823,823,1066,1335,1138,1199],"minutes":[2385.5,2484.8,1990.6,1790.0,1587.2,1775.1,1433.8,768.6,596.1,101.1,131.5,122.2,176.7,472.1,1157.3,1510.0,2952.9,4485.4,4186.4,3469.4,3626.5,2862.1,2141.0,3101.1,3939.2,3134.1,2571.1,2289.2,1393.8,1510.5,1301.1,1006.1,454.0,370.6,351.2,296.4,119.0,735.9,1509.5,1670.2,3237.3,4056.6,3592.9,2887.3,2553.4,1819.9,1758.8,3123.1,3155.0,3198.9,3149.7,2520.3,1867.3,1768.6,1878.3,928.9,335.1,295.2,192.3,182.6,407.8,747.1,1222.4,1679.0,3358.1,3944.3,3310.0,2784.0,3178.8,2463.9,2587.4,3411.8,3194.5,2807.6,2441.2,2399.6,2258.0,2124.3,2174.3,964.0,440.0,502.6,355.4,151.1,197.7,527.9,1113.6,1678.8,2272.6,3370.3,3161.9,3455.2,3604.5,2247.4,2405.0,3192.7,3523.7,2530.8,2669.0,2445.6,2607.4,2511.2,2524.5,1235.1,590.9,406.0,323.2,118.8,250.3,581.6,898.7,1497.8,2545.2,3939.4,4323.1,4205.4,3830.3,3254.2,2803.1,2915.2,3462.7,2587.3,2374.0,2208.0,2225.3,1842.7,1866.3,1735.1,994.5,727.4,437.1,331.1,329.2,378.5,339.9,646.5,875.0,1630.9,2058.9,2023.3,2366.8,2462.5,2473.3,2593.6,2134.0,2442.6,2142.4,2903.4,2094.2,2197.3,2262.9,1862.9,1570.5,1052.2,703.1,572.3,274.3,317.8,437.5,333.4,743.8,1099.1,1882.7,2104.8,2345.0,3095.8,2469.1,2182.2],"day_names":["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],"day_start_index":[0,24,48,72,96,120,144]},"persona":{"primary":{"name":"Night Owl","reason":"29.7% of your plays happen between midnight and 4am."},"secondary":{"name":"Comfort Loop","reason":"Just 2.77 unique artists per 100 plays -- you return to favorites again and again."},"stats_used":{"late_night_ratio":29.7,"morning_ratio":15.4,"weekend_ratio":25.3,"active_ratio":46.3,"completed_ratio":51.4,"quick_skip_ratio":32.3,"top_artist_share":9.1,"avg_repeats_per_artist":36.1}},"superfan_ladder":[{"artist":"The Beatles","plays":13530,"hours":333.2,"current_tier":"Bronze","next_tier":"Silver","plays_to_next_tier":1470,"progress_pct_to_next":85.3,"tiers":[{"key":"bronze","label":"Bronze","threshold":5000,"reward":"10% off code for the artist's general merch store","unlocked":true,"code":"54YSLV"},{"key":"silver","label":"Silver","threshold":15000,"reward":"Access to an exclusive vinyl colorway (platform collab)","unlocked":false,"code":null},{"key":"gold","label":"Gold","threshold":30000,"reward":"Single-use, time-sensitive concert presale code","unlocked":false,"code":null}]},{"artist":"The Killers","plays":6748,"hours":286.7,"current_tier":"Bronze","next_tier":"Silver","plays_to_next_tier":8252,"progress_pct_to_next":17.5,"tiers":[{"key":"bronze","label":"Bronze","threshold":5000,"reward":"10% off code for the artist's general merch store","unlocked":true,"code":"UFHBFT"},{"key":"silver","label":"Silver","threshold":15000,"reward":"Access to an exclusive vinyl colorway (platform collab)","unlocked":false,"code":null},{"key":"gold","label":"Gold","threshold":30000,"reward":"Single-use, time-sensitive concert presale code","unlocked":false,"code":null}]},{"artist":"John Mayer","plays":4797,"hours":197.7,"current_tier":null,"next_tier":"Bronze","plays_to_next_tier":203,"progress_pct_to_next":95.9,"tiers":[{"key":"bronze","label":"Bronze","threshold":5000,"reward":"10% off code for the artist's general merch store","unlocked":false,"code":null},{"key":"silver","label":"Silver","threshold":15000,"reward":"Access to an exclusive vinyl colorway (platform collab)","unlocked":false,"code":null},{"key":"gold","label":"Gold","threshold":30000,"reward":"Single-use, time-sensitive concert presale code","unlocked":false,"code":null}]},{"artist":"Bob Dylan","plays":3790,"hours":156.2,"current_tier":null,"next_tier":"Bronze","plays_to_next_tier":1210,"progress_pct_to_next":75.8,"tiers":[{"key":"bronze","label":"Bronze","threshold":5000,"reward":"10% off code for the artist's general merch store","unlocked":false,"code":null},{"key":"silver","label":"Silver","threshold":15000,"reward":"Access to an exclusive vinyl colorway (platform collab)","unlocked":false,"code":null},{"key":"gold","label":"Gold","threshold":30000,"reward":"Single-use, time-sensitive concert presale code","unlocked":false,"code":null}]},{"artist":"Paul McCartney","plays":2685,"hours":98.6,"current_tier":null,"next_tier":"Bronze","plays_to_next_tier":2315,"progress_pct_to_next":53.7,"tiers":[{"key":"bronze","label":"Bronze","threshold":5000,"reward":"10% off code for the artist's general merch store","unlocked":false,"code":null},{"key":"silver","label":"Silver","threshold":15000,"reward":"Access to an exclusive vinyl colorway (platform collab)","unlocked":false,"code":null},{"key":"gold","label":"Gold","threshold":30000,"reward":"Single-use, time-sensitive concert presale code","unlocked":false,"code":null}]},{"artist":"Led Zeppelin","plays":2470,"hours":68.4,"current_tier":null,"next_tier":"Bronze","plays_to_next_tier":2530,"progress_pct_to_next":49.4,"tiers":[{"key":"bronze","label":"Bronze","threshold":5000,"reward":"10% off code for the artist's general merch store","unlocked":false,"code":null},{"key":"silver","label":"Silver","threshold":15000,"reward":"Access to an exclusive vinyl colorway (platform collab)","unlocked":false,"code":null},{"key":"gold","label":"Gold","threshold":30000,"reward":"Single-use, time-sensitive concert presale code","unlocked":false,"code":null}]},{"artist":"Johnny Cash","plays":2467,"hours":66.1,"current_tier":null,"next_tier":"Bronze","plays_to_next_tier":2533,"progress_pct_to_next":49.3,"tiers":[{"key":"bronze","label":"Bronze","threshold":5000,"reward":"10% off code for the artist's general merch store","unlocked":false,"code":null},{"key":"silver","label":"Silver","threshold":15000,"reward":"Access to an exclusive vinyl colorway (platform collab)","unlocked":false,"code":null},{"key":"gold","label":"Gold","threshold":30000,"reward":"Single-use, time-sensitive concert presale code","unlocked":false,"code":null}]},{"artist":"The Rolling Stones","plays":2367,"hours":84.1,"current_tier":null,"next_tier":"Bronze","plays_to_next_tier":2633,"progress_pct_to_next":47.3,"tiers":[{"key":"bronze","label":"Bronze","threshold":5000,"reward":"10% off code for the artist's general merch store","unlocked":false,"code":null},{"key":"silver","label":"Silver","threshold":15000,"reward":"Access to an exclusive vinyl colorway (platform collab)","unlocked":false,"code":null},{"key":"gold","label":"Gold","threshold":30000,"reward":"Single-use, time-sensitive concert presale code","unlocked":false,"code":null}]},{"artist":"Radiohead","plays":2295,"hours":59.5,"current_tier":null,"next_tier":"Bronze","plays_to_next_tier":2705,"progress_pct_to_next":45.9,"tiers":[{"key":"bronze","label":"Bronze","threshold":5000,"reward":"10% off code for the artist's general merch store","unlocked":false,"code":null},{"key":"silver","label":"Silver","threshold":15000,"reward":"Access to an exclusive vinyl colorway (platform collab)","unlocked":false,"code":null},{"key":"gold","label":"Gold","threshold":30000,"reward":"Single-use, time-sensitive concert presale code","unlocked":false,"code":null}]},{"artist":"The Black Keys","plays":2221,"hours":53.0,"current_tier":null,"next_tier":"Bronze","plays_to_next_tier":2779,"progress_pct_to_next":44.4,"tiers":[{"key":"bronze","label":"Bronze","threshold":5000,"reward":"10% off code for the artist's general merch store","unlocked":false,"code":null},{"key":"silver","label":"Silver","threshold":15000,"reward":"Access to an exclusive vinyl colorway (platform collab)","unlocked":false,"code":null},{"key":"gold","label":"Gold","threshold":30000,"reward":"Single-use, time-sensitive concert presale code","unlocked":false,"code":null}]},{"artist":"Imagine Dragons","plays":2107,"hours":66.8,"current_tier":null,"next_tier":"Bronze","plays_to_next_tier":2893,"progress_pct_to_next":42.1,"tiers":[{"key":"bronze","label":"Bronze","threshold":5000,"reward":"10% off code for the artist's general merch store","unlocked":false,"code":null},{"key":"silver","label":"Silver","threshold":15000,"reward":"Access to an exclusive vinyl colorway (platform collab)","unlocked":false,"code":null},{"key":"gold","label":"Gold","threshold":30000,"reward":"Single-use, time-sensitive concert presale code","unlocked":false,"code":null}]},{"artist":"Pink Floyd","plays":2079,"hours":71.3,"current_tier":null,"next_tier":"Bronze","plays_to_next_tier":2921,"progress_pct_to_next":41.6,"tiers":[{"key":"bronze","label":"Bronze","threshold":5000,"reward":"10% off code for the artist's general merch store","unlocked":false,"code":null},{"key":"silver","label":"Silver","threshold":15000,"reward":"Access to an exclusive vinyl colorway (platform collab)","unlocked":false,"code":null},{"key":"gold","label":"Gold","threshold":30000,"reward":"Single-use, time-sensitive concert presale code","unlocked":false,"code":null}]},{"artist":"The Strokes","plays":1784,"hours":85.8,"current_tier":null,"next_tier":"Bronze","plays_to_next_tier":3216,"progress_pct_to_next":35.7,"tiers":[{"key":"bronze","label":"Bronze","threshold":5000,"reward":"10% off code for the artist's general merch store","unlocked":false,"code":null},{"key":"silver","label":"Silver","threshold":15000,"reward":"Access to an exclusive vinyl colorway (platform collab)","unlocked":false,"code":null},{"key":"gold","label":"Gold","threshold":30000,"reward":"Single-use, time-sensitive concert presale code","unlocked":false,"code":null}]},{"artist":"Coldplay","plays":1614,"hours":56.6,"current_tier":null,"next_tier":"Bronze","plays_to_next_tier":3386,"progress_pct_to_next":32.3,"tiers":[{"key":"bronze","label":"Bronze","threshold":5000,"reward":"10% off code for the artist's general merch store","unlocked":false,"code":null},{"key":"silver","label":"Silver","threshold":15000,"reward":"Access to an exclusive vinyl colorway (platform collab)","unlocked":false,"code":null},{"key":"gold","label":"Gold","threshold":30000,"reward":"Single-use, time-sensitive concert presale code","unlocked":false,"code":null}]}]}
 </script>
 
-<script>
-(function(){
-  const DATA = JSON.parse(document.getElementById('wrapped-data').textContent);
+  <script>
+    (function () {
+      let DATA = null;
 
-  // ---------------- THEME TOGGLE ----------------
-  const themeToggle = document.getElementById('theme-toggle');
-  const themeIcon = document.getElementById('theme-icon');
-  const themeLabel = document.getElementById('theme-label');
-  let currentTheme = 'light';
-  themeToggle.addEventListener('click', function(){
-    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
-    document.documentElement.setAttribute('data-theme', currentTheme);
-    themeToggle.setAttribute('aria-pressed', currentTheme === 'dark' ? 'true' : 'false');
-    themeIcon.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
-    themeLabel.textContent = currentTheme === 'dark' ? 'Light mode' : 'Dark mode';
-  });
+      // ---------------- THEME TOGGLE ----------------
+      const themeToggle = document.getElementById('theme-toggle');
+      const themeIcon = document.getElementById('theme-icon');
+      const themeLabel = document.getElementById('theme-label');
+      let currentTheme = 'light';
+      themeToggle.addEventListener('click', function () {
+        currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        themeToggle.setAttribute('aria-pressed', currentTheme === 'dark' ? 'true' : 'false');
+        themeIcon.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+        themeLabel.textContent = currentTheme === 'dark' ? 'Light mode' : 'Dark mode';
+      });
 
-  // ---------------- LANDING -> APP ----------------
-  const form = document.getElementById('name-form');
-  const input = document.getElementById('name-input');
-  const errorEl = document.getElementById('name-error');
+      // ---------------- LANDING -> APP ----------------
+      const form = document.getElementById('name-form');
+      const input = document.getElementById('name-input');
+      const errorEl = document.getElementById('name-error');
 
-  form.addEventListener('submit', function(e){
-    e.preventDefault();
-    const name = input.value.trim();
-    if (!name){ errorEl.textContent = 'Type a name or username to continue.'; input.focus(); return; }
-    if (name.length > 24){ errorEl.textContent = 'Keep it under 24 characters.'; return; }
-    errorEl.textContent = '';
-    launchApp(name);
-  });
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const name = input.value.trim();
+        if (!name) { errorEl.textContent = 'Type a name or username to continue.'; input.focus(); return; }
+        if (name.length > 24) { errorEl.textContent = 'Keep it under 24 characters.'; return; }
+        errorEl.textContent = '';
+        loadDashboardData(name);
+      });
 
-  function escapeHtml(str){
-    const d = document.createElement('div');
-    d.textContent = str;
-    return d.innerHTML;
-  }
-  function hashCode(str){
-    let hash = 0;
-    for (let i=0;i<str.length;i++){ hash = ((hash<<5) - hash) + str.charCodeAt(i); hash |= 0; }
-    return hash;
-  }
-  function fmt(n){ return Number(n).toLocaleString(); }
+      function escapeHtml(str) {
+        const d = document.createElement('div');
+        d.textContent = str;
+        return d.innerHTML;
+      }
+      function hashCode(str) {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) { hash = ((hash << 5) - hash) + str.charCodeAt(i); hash |= 0; }
+        return hash;
+      }
+      function fmt(n) { return Number(n).toLocaleString(); }
 
-  // Deterministic little "art" for a track/album frame: a hue + two initials,
-  // generated from the title itself so it's stable across reloads without
-  // needing (or infringing on) real cover art.
-  function artFrameHtml(seedStr, size){ // size: 'sm' | 'lg'
-    const h = Math.abs(hashCode(seedStr)) % 360;
-    const initials = seedStr.replace(/[^A-Za-z0-9 ]/g,'').trim().split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase() || '♪';
-    const bg = `linear-gradient(135deg, hsl(${h},32%,42%), hsl(${(h+40)%360},28%,24%))`;
-    const icon = size === 'lg'
-      ? '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.6"/></svg>'
-      : '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>';
-    return `<div class="art-frame ${size}" style="background:${bg}">${icon}<span class="mono">${escapeHtml(initials)}</span></div>`;
-  }
+      function normalizePipelineData(raw) {
+        const summary = raw.summary || {};
+        const dateRange = Array.isArray(summary.date_range) ? summary.date_range : [];
+        const startDate = dateRange[0] || '';
+        const endDate = dateRange[1] || '';
+        const yearsCovered = summary.years_covered || (startDate && endDate ? Math.max(1, new Date(endDate).getFullYear() - new Date(startDate).getFullYear() + 1) : 1);
 
-  function launchApp(name){
-    document.getElementById('landing').style.display = 'none';
-    const app = document.getElementById('app');
-    app.classList.add('visible');
-    document.getElementById('nav-who').textContent = "for " + name;
-    document.title = name + "'s Bug Bytes";
+        const topArtists = (raw.top_artists || []).map(function (a, i) {
+          return {
+            rank: i + 1,
+            artist: a.artist_name || a.artist,
+            plays: Number(a.play_count || a.plays || 0),
+            hours: Number(a.total_hours || a.hours || 0),
+            engagement_score: Number(a.engagement_score || 0),
+            completion_rate: Number(a.completion_rate || 0),
+            tier: a.tier || '',
+            verified_streams: Number(a.verified_streams || 0),
+          };
+        });
 
-    const s = DATA.summary;
-    document.getElementById('hero-hours').textContent = s.total_hours.toLocaleString() + ' hrs';
-    document.getElementById('hero-copy').innerHTML =
-      `Hey <strong>${escapeHtml(name)}</strong> — that's ${s.total_hours.toLocaleString()} hours across ` +
-      `${s.years_covered} years (${s.date_start} → ${s.date_end}), spread over ` +
-      `${s.unique_artists.toLocaleString()} artists and ${s.unique_tracks.toLocaleString()} tracks.`;
+        const topTracks = (raw.top_tracks || []).map(function (t) {
+          return {
+            track: t.track_name || t.track,
+            artist: t.artist_name || t.artist,
+            plays: Number(t.play_count || t.plays || 0),
+            minutes: Number(t.hours || 0) * 60,
+          };
+        });
 
-    const heroStats = [
-      {num:fmt(s.total_plays), lbl:'total plays'},
-      {num:fmt(s.unique_artists), lbl:'unique artists'},
-      {num:fmt(s.unique_albums), lbl:'unique albums'},
-      {num:s.years_covered, lbl:'years of history'},
-    ];
-    document.getElementById('hero-stats').innerHTML = heroStats.map(function(h){
-      return `<div class="stat-cell"><div class="num">${h.num}</div><div class="lbl">${h.lbl}</div></div>`;
-    }).join('');
+        const topAlbums = (raw.top_albums || []).map(function (al) {
+          return {
+            album: al.album_name || al.album,
+            artist: al.artist_name || al.artist,
+            plays: Number(al.play_count || al.plays || 0),
+            hours: Number(al.hours || 0),
+          };
+        });
 
-    // ---------------- PERSONA ----------------
-    const p = DATA.persona;
-    document.getElementById('persona-primary').textContent = p.primary.name;
-    document.getElementById('persona-reason').textContent = p.primary.reason;
-    if (p.secondary){
-      const secEl = document.getElementById('persona-secondary');
-      secEl.style.display = 'inline-block';
-      secEl.textContent = 'also: ' + p.secondary.name;
-    }
-    document.getElementById('echo-id').textContent = '#' + Math.abs(hashCode(name)).toString().slice(0,6);
-    document.getElementById('stub-range').textContent = s.date_start.slice(0,4) + '–' + s.date_end.slice(0,4);
+        const hourly = Array.isArray(raw.hourly_hours) ? raw.hourly_hours : [];
+        const daily = raw.daily_hours || {};
+        const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        const dayFactors = [1.0, 0.95, 0.92, 0.88, 0.98, 1.22, 1.16];
+        const minutes = [];
+        const plays = [];
+        dayNames.forEach(function (day, dayIndex) {
+          const dayHours = Number(daily[day] || 0) * 60;
+          for (let h = 0; h < 24; h++) {
+            const hourlyMinutes = Number(hourly[h] || 0) * 60;
+            const blendedMinutes = Math.round((hourlyMinutes * dayFactors[dayIndex] / 7) + (dayHours / 24 / 7));
+            minutes.push(Math.max(0, blendedMinutes));
+            plays.push(Math.max(0, Math.round(blendedMinutes / 20)));
+          }
+        });
 
-    // ---------------- CHART 01: TOP ARTISTS ----------------
-    const maxScore = Math.max.apply(null, DATA.top_artists.map(a => a.engagement_score));
-    document.getElementById('artist-chart').innerHTML = DATA.top_artists.map(function(a){
-      return `<div class="bar-row">
+        const personaPrimary = topArtists[0]
+          ? { name: topArtists[0].artist, reason: `${topArtists[0].artist} is the anchor artist in your listening history.` }
+          : { name: 'Your listening loop', reason: 'You keep returning to the same familiar favorites.' };
+
+        const personaSecondary = topArtists[1]
+          ? { name: topArtists[1].artist }
+          : null;
+
+        const tierList = [
+          { key: 'listener', label: 'Listener', threshold: 0, reward: 'Your starting level' },
+          { key: 'bronze', label: 'Bronze', threshold: 100, reward: 'Early access to new releases' },
+          { key: 'silver', label: 'Silver', threshold: 1000, reward: 'Discount code for merch' },
+          { key: 'gold', label: 'Gold', threshold: 5000, reward: 'Presale concert tickets' },
+          { key: 'platinum', label: 'Platinum', threshold: 30000, reward: 'Exclusive vinyl / signed item eligibility' },
+        ];
+
+        const superfanLadder = topArtists.slice(0, 6).map(function (artist) {
+          const plays = artist.plays || 0;
+          const currentTier = tierList.slice().reverse().find(function (t) { return plays >= t.threshold; }) || tierList[0];
+          const nextTier = tierList.find(function (t) { return plays < t.threshold; }) || null;
+          const progressPctToNext = nextTier && nextTier.threshold > 0
+            ? Math.min(100, Math.round((plays / nextTier.threshold) * 100))
+            : 100;
+          const playsToNextTier = nextTier && nextTier.threshold > 0
+            ? Math.max(0, nextTier.threshold - plays)
+            : 0;
+          return {
+            artist: artist.artist,
+            plays: plays,
+            hours: Number(artist.hours || 0).toFixed(1),
+            current_tier: currentTier.label,
+            next_tier: nextTier ? nextTier.label : null,
+            progress_pct_to_next: progressPctToNext,
+            plays_to_next_tier: playsToNextTier,
+            tiers: tierList.map(function (t) {
+              return {
+                key: t.key,
+                label: t.label,
+                threshold: t.threshold,
+                reward: t.reward,
+                unlocked: plays >= t.threshold,
+                code: `${t.key.toUpperCase()}-${String(artist.artist).slice(0, 3).toUpperCase()}`,
+              };
+            }),
+          };
+        });
+
+        return {
+          summary: {
+            ...summary,
+            total_plays: Number(summary.total_plays || 0),
+            total_hours: Number(summary.total_hours || 0),
+            unique_artists: Number(summary.unique_artists || 0),
+            unique_tracks: Number(summary.unique_tracks || 0),
+            unique_albums: Number(summary.unique_albums || topAlbums.length || 0),
+            date_start: startDate,
+            date_end: endDate,
+            years_covered: yearsCovered,
+            overall_skip_rate: Number(summary.overall_skip_rate || 0),
+          },
+          top_artists: topArtists,
+          top_tracks: topTracks,
+          top_albums: topAlbums,
+          yearly_hours: (raw.yearly_hours || []).map(function (y) {
+            return { year: Number(y.year), hours: Number(y.hours || 0) };
+          }),
+          weekly_rhythm: { day_names: dayNames, minutes: minutes, plays: plays },
+          persona: { primary: personaPrimary, secondary: personaSecondary },
+          superfan_ladder: superfanLadder,
+        };
+      }
+
+      async function loadDashboardData(name) {
+        if (DATA) {
+          launchApp(name);
+          return;
+        }
+        try {
+          const response = await fetch('dashboard_data.json', { cache: 'no-store' });
+          if (!response.ok) { throw new Error('dashboard data unavailable'); }
+          const payload = await response.json();
+          DATA = normalizePipelineData(payload);
+        } catch (err) {
+          console.warn('Falling back to embedded sample data:', err);
+          DATA = normalizePipelineData(JSON.parse(document.getElementById('wrapped-data').textContent));
+        }
+        launchApp(name);
+      }
+
+      // Deterministic little "art" for a track/album frame: a hue + two initials,
+      // generated from the title itself so it's stable across reloads without
+      // needing (or infringing on) real cover art.
+      function artFrameHtml(seedStr, size) { // size: 'sm' | 'lg'
+        const h = Math.abs(hashCode(seedStr)) % 360;
+        const initials = seedStr.replace(/[^A-Za-z0-9 ]/g, '').trim().split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase() || '♪';
+        const bg = `linear-gradient(135deg, hsl(${h},32%,42%), hsl(${(h + 40) % 360},28%,24%))`;
+        const icon = size === 'lg'
+          ? '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.6"/></svg>'
+          : '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>';
+        return `<div class="art-frame ${size}" style="background:${bg}">${icon}<span class="mono">${escapeHtml(initials)}</span></div>`;
+      }
+
+      function launchApp(name) {
+        document.getElementById('landing').style.display = 'none';
+        const app = document.getElementById('app');
+        app.classList.add('visible');
+        document.getElementById('nav-who').textContent = "for " + name;
+        document.title = name + "'s Bug Bytes";
+
+        const s = DATA.summary;
+        document.getElementById('hero-hours').textContent = s.total_hours.toLocaleString() + ' hrs';
+        document.getElementById('hero-copy').innerHTML =
+          `Hey <strong>${escapeHtml(name)}</strong> — that's ${s.total_hours.toLocaleString()} hours across ` +
+          `${s.years_covered} years (${s.date_start} → ${s.date_end}), spread over ` +
+          `${s.unique_artists.toLocaleString()} artists and ${s.unique_tracks.toLocaleString()} tracks.`;
+
+        const heroStats = [
+          { num: fmt(s.total_plays), lbl: 'total plays' },
+          { num: fmt(s.unique_artists), lbl: 'unique artists' },
+          { num: fmt(s.unique_albums), lbl: 'unique albums' },
+          { num: s.years_covered, lbl: 'years of history' },
+        ];
+        document.getElementById('hero-stats').innerHTML = heroStats.map(function (h) {
+          return `<div class="stat-cell"><div class="num">${h.num}</div><div class="lbl">${h.lbl}</div></div>`;
+        }).join('');
+
+        // ---------------- PERSONA ----------------
+        const p = DATA.persona;
+        document.getElementById('persona-primary').textContent = p.primary.name;
+        document.getElementById('persona-reason').textContent = p.primary.reason;
+        if (p.secondary) {
+          const secEl = document.getElementById('persona-secondary');
+          secEl.style.display = 'inline-block';
+          secEl.textContent = 'also: ' + p.secondary.name;
+        }
+        document.getElementById('echo-id').textContent = '#' + Math.abs(hashCode(name)).toString().slice(0, 6);
+        document.getElementById('stub-range').textContent = s.date_start.slice(0, 4) + '–' + s.date_end.slice(0, 4);
+
+        // ---------------- CHART 01: TOP ARTISTS ----------------
+        const maxScore = Math.max.apply(null, DATA.top_artists.map(a => a.engagement_score));
+        document.getElementById('artist-chart').innerHTML = DATA.top_artists.map(function (a) {
+          return `<div class="bar-row">
         <div><span class="bar-rank">#${a.rank}</span> <span class="bar-name">${escapeHtml(a.artist)}</span></div>
-        <div class="bar-track"><div class="bar-fill" data-w="${(a.engagement_score/maxScore*100).toFixed(1)}"></div></div>
+        <div class="bar-track"><div class="bar-fill" data-w="${(a.engagement_score / maxScore * 100).toFixed(1)}"></div></div>
         <div class="bar-score">${a.engagement_score}</div>
       </div>`;
-    }).join('');
+        }).join('');
 
-    // ---------------- CHART 02: YEARLY HOURS ----------------
-    const maxHours = Math.max.apply(null, DATA.yearly_hours.map(y => y.hours));
-    document.getElementById('yearly-chart').innerHTML = DATA.yearly_hours.map(function(y){
-      return `<div class="year-col">
+        // ---------------- CHART 02: YEARLY HOURS ----------------
+        const maxHours = Math.max.apply(null, DATA.yearly_hours.map(y => y.hours));
+        document.getElementById('yearly-chart').innerHTML = DATA.yearly_hours.map(function (y) {
+          return `<div class="year-col">
         <div class="year-val">${Math.round(y.hours)}</div>
-        <div class="year-bar" data-h="${(y.hours/maxHours*100).toFixed(1)}"></div>
+        <div class="year-bar" data-h="${(y.hours / maxHours * 100).toFixed(1)}"></div>
         <div class="year-lbl">${String(y.year).slice(2)}</div>
       </div>`;
-    }).join('');
+        }).join('');
 
-    // ---------------- CHART 03: BEHAVIOUR HEATMAP ----------------
-    renderHeatmap(DATA.weekly_rhythm);
+        // ---------------- CHART 03: BEHAVIOUR HEATMAP ----------------
+        renderHeatmap(DATA.weekly_rhythm);
 
-    // ---------------- HEAVY ROTATION: TRACKS ----------------
-    document.getElementById('track-list').innerHTML = DATA.top_tracks.map(function(t, i){
-      return `<div class="rotation-row">
-        <span class="rotation-rank">${i+1}</span>
+        // ---------------- HEAVY ROTATION: TRACKS ----------------
+        document.getElementById('track-list').innerHTML = DATA.top_tracks.map(function (t, i) {
+          return `<div class="rotation-row">
+        <span class="rotation-rank">${i + 1}</span>
         ${artFrameHtml(t.track + t.artist, 'sm')}
         <div class="rotation-main"><div class="name">${escapeHtml(t.track)}</div><div class="sub">${escapeHtml(t.artist)}</div></div>
         <div class="rotation-val">${fmt(t.minutes)}m</div>
       </div>`;
-    }).join('');
+        }).join('');
 
-    // ---------------- HEAVY ROTATION: ALBUMS ----------------
-    document.getElementById('album-list').innerHTML = DATA.top_albums.map(function(al){
-      return `<div class="album-card">
+        // ---------------- HEAVY ROTATION: ALBUMS ----------------
+        document.getElementById('album-list').innerHTML = DATA.top_albums.map(function (al) {
+          return `<div class="album-card">
         ${artFrameHtml(al.album + al.artist, 'lg')}
         <div class="name">${escapeHtml(al.album)}</div>
         <div class="sub">${escapeHtml(al.artist)}</div>
         <div class="val">${al.hours}h · ${fmt(al.plays)} plays</div>
       </div>`;
-    }).join('');
+        }).join('');
 
-    // ---------------- BACKSTAGE PASS: FIXED TIER LADDER ----------------
-    renderBackstagePass(DATA.superfan_ladder);
+        // ---------------- BACKSTAGE PASS: FIXED TIER LADDER ----------------
+        renderBackstagePass(DATA.superfan_ladder);
 
-    // trigger CSS transitions after paint
-    requestAnimationFrame(function(){
-      requestAnimationFrame(function(){
-        document.querySelectorAll('.bar-fill').forEach(el => el.style.width = el.dataset.w + '%');
-        document.querySelectorAll('.year-bar').forEach(el => el.style.height = el.dataset.h + '%');
-        document.querySelectorAll('.pfill').forEach(el => el.style.width = el.dataset.w + '%');
-      });
-    });
+        // trigger CSS transitions after paint
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            document.querySelectorAll('.bar-fill').forEach(el => el.style.width = el.dataset.w + '%');
+            document.querySelectorAll('.year-bar').forEach(el => el.style.height = el.dataset.h + '%');
+            document.querySelectorAll('.pfill').forEach(el => el.style.width = el.dataset.w + '%');
+          });
+        });
 
-    setupReveal();
-  }
-
-  // ---------------- CHART 03 HEATMAP ----------------
-  function renderHeatmap(wr){
-    const grid = document.getElementById('heat-grid');
-    const tooltip = document.getElementById('heat-tooltip');
-    const ttDay = document.getElementById('heat-tooltip-day');
-    const ttVal = document.getElementById('heat-tooltip-val');
-    const maxMin = Math.max.apply(null, wr.minutes) || 1;
-
-    function bucketColor(v){
-      const r = v / maxMin;
-      if (r <= 0.02) return 'var(--heat-0)';
-      if (r < 0.25) return 'var(--heat-1)';
-      if (r < 0.5) return 'var(--heat-2)';
-      if (r < 0.78) return 'var(--heat-3)';
-      return 'var(--heat-4)';
-    }
-
-    let html = '<div></div>'; // top-left empty corner
-    for (let h=0; h<24; h++){
-      html += `<div class="heat-hourlbl">${h % 3 === 0 ? h : ''}</div>`;
-    }
-    wr.day_names.forEach(function(day, di){
-      html += `<div class="heat-daylbl">${day.slice(0,3)}</div>`;
-      for (let h=0; h<24; h++){
-        const idx = di*24 + h;
-        const mins = wr.minutes[idx];
-        const plays = wr.plays[idx];
-        html += `<div class="heat-cell" style="background:${bucketColor(mins)}" data-label="${day} ${String(h).padStart(2,'0')}:00" data-plays="${plays}" data-mins="${mins}"></div>`;
+        setupReveal();
       }
-    });
-    grid.innerHTML = html;
 
-    grid.querySelectorAll('.heat-cell').forEach(function(cell){
-      cell.addEventListener('mousemove', function(e){
-        ttDay.textContent = cell.dataset.label;
-        ttVal.textContent = cell.dataset.plays + ' plays · ' + cell.dataset.mins + 'm';
-        tooltip.style.left = (e.clientX + 14) + 'px';
-        tooltip.style.top = (e.clientY - 12) + 'px';
-        tooltip.classList.add('show');
-      });
-      cell.addEventListener('mouseleave', function(){ tooltip.classList.remove('show'); });
-    });
-  }
+      // ---------------- CHART 03 HEATMAP ----------------
+      function renderHeatmap(wr) {
+        const grid = document.getElementById('heat-grid');
+        const tooltip = document.getElementById('heat-tooltip');
+        const ttDay = document.getElementById('heat-tooltip-day');
+        const ttVal = document.getElementById('heat-tooltip-val');
+        const maxMin = Math.max.apply(null, wr.minutes) || 1;
 
-  // ---------------- BACKSTAGE PASS ----------------
-  function renderBackstagePass(ladder){
-    document.getElementById('pass-grid').innerHTML = ladder.map(function(c){
-      const tierRows = c.tiers.map(function(t){
-        const codeHtml = t.unlocked
-          ? `<button type="button" class="tier-code" data-code="${t.code}">${t.code}</button>`
-          : `<span class="tier-lockednote">🔒 locked</span>`;
-        const badge = t.unlocked ? '✓' : '🔒';
-        return `<div class="tier-row ${t.unlocked ? 'unlocked' : 'locked'}" data-tier="${t.key}">
+        function bucketColor(v) {
+          const r = v / maxMin;
+          if (r <= 0.02) return 'var(--heat-0)';
+          if (r < 0.25) return 'var(--heat-1)';
+          if (r < 0.5) return 'var(--heat-2)';
+          if (r < 0.78) return 'var(--heat-3)';
+          return 'var(--heat-4)';
+        }
+
+        let html = '<div></div>'; // top-left empty corner
+        for (let h = 0; h < 24; h++) {
+          html += `<div class="heat-hourlbl">${h % 3 === 0 ? h : ''}</div>`;
+        }
+        wr.day_names.forEach(function (day, di) {
+          html += `<div class="heat-daylbl">${day.slice(0, 3)}</div>`;
+          for (let h = 0; h < 24; h++) {
+            const idx = di * 24 + h;
+            const mins = wr.minutes[idx];
+            const plays = wr.plays[idx];
+            html += `<div class="heat-cell" style="background:${bucketColor(mins)}" data-label="${day} ${String(h).padStart(2, '0')}:00" data-plays="${plays}" data-mins="${mins}"></div>`;
+          }
+        });
+        grid.innerHTML = html;
+
+        grid.querySelectorAll('.heat-cell').forEach(function (cell) {
+          cell.addEventListener('mousemove', function (e) {
+            ttDay.textContent = cell.dataset.label;
+            ttVal.textContent = cell.dataset.plays + ' plays · ' + cell.dataset.mins + 'm';
+            tooltip.style.left = (e.clientX + 14) + 'px';
+            tooltip.style.top = (e.clientY - 12) + 'px';
+            tooltip.classList.add('show');
+          });
+          cell.addEventListener('mouseleave', function () { tooltip.classList.remove('show'); });
+        });
+      }
+
+      // ---------------- BACKSTAGE PASS ----------------
+      function renderBackstagePass(ladder) {
+        document.getElementById('pass-grid').innerHTML = ladder.map(function (c) {
+          const tierRows = c.tiers.map(function (t) {
+            const codeHtml = t.unlocked
+              ? `<button type="button" class="tier-code" data-code="${t.code}">${t.code}</button>`
+              : `<span class="tier-lockednote">🔒 locked</span>`;
+            const badge = t.unlocked ? '✓' : '🔒';
+            return `<div class="tier-row ${t.unlocked ? 'unlocked' : 'locked'}" data-tier="${t.key}">
           <div class="tier-badge">${badge}</div>
           <div class="tier-info"><div class="tname">${t.label} · ${fmt(t.threshold)}+</div><div class="treward">${t.reward}</div></div>
           ${codeHtml}
         </div>`;
-      }).join('');
+          }).join('');
 
-      const progressHtml = c.next_tier
-        ? `<div class="pass-progress">
+          const progressHtml = c.next_tier
+            ? `<div class="pass-progress">
             <div class="ptrack"><div class="pfill" data-w="${c.progress_pct_to_next}"></div></div>
             <div class="ptext">${fmt(c.plays_to_next_tier)} plays to ${c.next_tier} (${c.progress_pct_to_next}%)</div>
           </div>`
-        : `<div class="pass-progress"><div class="ptext">Every tier unlocked — as high as this artist goes.</div></div>`;
+            : `<div class="pass-progress"><div class="ptext">Every tier unlocked — as high as this artist goes.</div></div>`;
 
-      return `<div class="pass-card">
+          return `<div class="pass-card">
         <div class="pass-head"><span class="aname">${escapeHtml(c.artist)}</span><span class="astreams">${fmt(c.plays)} plays · ${c.hours}h</span></div>
         <div class="pass-current">${c.current_tier ? c.current_tier + ' tier reached' : 'No tier yet'}</div>
         <div class="tier-ladder">${tierRows}</div>
         ${progressHtml}
       </div>`;
-    }).join('');
+        }).join('');
 
-    document.querySelectorAll('.tier-code').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        const code = btn.dataset.code;
-        function markCopied(){ btn.classList.add('copied'); setTimeout(() => btn.classList.remove('copied'), 1200); }
-        if (navigator.clipboard && navigator.clipboard.writeText){
-          navigator.clipboard.writeText(code).then(markCopied).catch(markCopied);
-        } else { markCopied(); }
-      });
-    });
-  }
-
-  // ---------------- PAGE NAVIGATION (real pages, no scroll anchors) ----------------
-  const navButtons = Array.from(document.querySelectorAll('#page-nav button'));
-  const pages = Array.from(document.querySelectorAll('.page'));
-  function showPage(id){
-    pages.forEach(p => p.classList.toggle('active', p.dataset.page === id));
-    navButtons.forEach(b => b.classList.toggle('active', b.dataset.page === id));
-    window.scrollTo({top:0, behavior:'instant' in window ? 'instant' : 'auto'});
-    document.querySelectorAll('.page.active .reveal').forEach(el => el.classList.add('in-view'));
-  }
-  navButtons.forEach(btn => btn.addEventListener('click', () => showPage(btn.dataset.page)));
-
-  // ---------------- REVEAL ANIMATION ----------------
-  function setupReveal(){
-    if (!('IntersectionObserver' in window)){
-      document.querySelectorAll('.reveal').forEach(el => el.classList.add('in-view'));
-      return;
-    }
-    const io = new IntersectionObserver(function(entries){
-      entries.forEach(function(entry){
-        if (entry.isIntersecting){ entry.target.classList.add('in-view'); io.unobserve(entry.target); }
-      });
-    }, {threshold:0.1});
-    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
-  }
-
-  // ---------------- CAROUSELS (Insights: 3 slides · Rotation: 2 slides) ----------------
-  function makeCarousel(name, slideLabels){
-    const track = document.getElementById(name + '-track');
-    const slides = track.children.length;
-    const prevBtn = document.querySelector(`.carousel-btn.prev[data-carousel="${name}"]`);
-    const nextBtn = document.querySelector(`.carousel-btn.next[data-carousel="${name}"]`);
-    const label = document.getElementById(name + '-label');
-    const dotsWrap = document.getElementById(name + '-dots');
-    let index = 0;
-
-    dotsWrap.innerHTML = Array.from({length:slides}).map(() => '<span></span>').join('');
-    const dots = Array.from(dotsWrap.children);
-
-    function render(){
-      track.style.transform = `translateX(-${index * 100}%)`;
-      prevBtn.disabled = index === 0;
-      nextBtn.disabled = index === slides - 1;
-      label.textContent = slideLabels[index];
-      dots.forEach((d,i) => d.classList.toggle('active', i === index));
-    }
-    prevBtn.addEventListener('click', () => { if (index > 0){ index--; render(); } });
-    nextBtn.addEventListener('click', () => { if (index < slides - 1){ index++; render(); } });
-    render();
-  }
-  makeCarousel('insights', ['Chart 01 of 3 · Top Artists', 'Chart 02 of 3 · Yearly Hours', 'Chart 03 of 3 · Weekly Behaviour']);
-  makeCarousel('rotation', ['Top Tracks', 'Top Albums']);
-
-  // ---------------- DOWNLOAD MENUS (PNG / JPEG / PDF, per page) ----------------
-  const toast = document.getElementById('dl-toast');
-  let toastTimer = null;
-  function showToast(msg){
-    toast.textContent = msg;
-    toast.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove('show'), 4500);
-  }
-  function triggerDownload(href, filename){
-    const a = document.createElement('a');
-    a.href = href; a.download = filename;
-    document.body.appendChild(a); a.click(); a.remove();
-  }
-
-  document.querySelectorAll('[data-dl-toggle]').forEach(function(btn){
-    btn.addEventListener('click', function(e){
-      e.stopPropagation();
-      const menu = document.getElementById(btn.dataset.dlToggle);
-      document.querySelectorAll('.download-menu').forEach(m => { if (m !== menu) m.classList.remove('open'); });
-      menu.classList.toggle('open');
-    });
-  });
-  document.addEventListener('click', function(){ document.querySelectorAll('.download-menu').forEach(m => m.classList.remove('open')); });
-
-  document.querySelectorAll('.download-menu button[data-dl]').forEach(function(btn){
-    btn.addEventListener('click', async function(e){
-      e.stopPropagation();
-      const format = btn.dataset.dl;
-      const targetId = btn.dataset.target;
-      const filenameBase = btn.dataset.name;
-      const menu = btn.closest('.download-menu');
-      menu.classList.remove('open');
-
-      if (typeof html2canvas === 'undefined'){
-        showToast('Export needs a helper library loaded from the internet — reconnect and reload to use it.');
-        return;
-      }
-      const target = document.getElementById(targetId);
-      showToast('Rendering "' + filenameBase.replace('bug-bytes-','').replace('-',' ') + '" — one moment…');
-      try{
-        const canvas = await html2canvas(target, {
-          backgroundColor: getComputedStyle(document.body).backgroundColor,
-          useCORS: true,
-          scale: Math.min(window.devicePixelRatio || 1, 2),
-        });
-        if (format === 'png'){
-          canvas.toBlob(function(blob){
-            const url = URL.createObjectURL(blob);
-            triggerDownload(url, filenameBase + '.png');
-            URL.revokeObjectURL(url);
-            showToast('Saved ' + filenameBase + '.png');
+        document.querySelectorAll('.tier-code').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            const code = btn.dataset.code;
+            function markCopied() { btn.classList.add('copied'); setTimeout(() => btn.classList.remove('copied'), 1200); }
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(code).then(markCopied).catch(markCopied);
+            } else { markCopied(); }
           });
-        } else if (format === 'jpeg'){
-          const url = canvas.toDataURL('image/jpeg', 0.92);
-          triggerDownload(url, filenameBase + '.jpg');
-          showToast('Saved ' + filenameBase + '.jpg');
-        } else if (format === 'pdf'){
-          if (!window.jspdf){
-            showToast('PDF export needs a helper library loaded from the internet — reconnect and reload to use it.');
+        });
+      }
+
+      // ---------------- PAGE NAVIGATION (real pages, no scroll anchors) ----------------
+      const navButtons = Array.from(document.querySelectorAll('#page-nav button'));
+      const pages = Array.from(document.querySelectorAll('.page'));
+      function showPage(id) {
+        pages.forEach(p => p.classList.toggle('active', p.dataset.page === id));
+        navButtons.forEach(b => b.classList.toggle('active', b.dataset.page === id));
+        window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+        document.querySelectorAll('.page.active .reveal').forEach(el => el.classList.add('in-view'));
+      }
+      navButtons.forEach(btn => btn.addEventListener('click', () => showPage(btn.dataset.page)));
+
+      // ---------------- REVEAL ANIMATION ----------------
+      function setupReveal() {
+        if (!('IntersectionObserver' in window)) {
+          document.querySelectorAll('.reveal').forEach(el => el.classList.add('in-view'));
+          return;
+        }
+        const io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) { entry.target.classList.add('in-view'); io.unobserve(entry.target); }
+          });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+      }
+
+      // ---------------- CAROUSELS (Insights: 3 slides · Rotation: 2 slides) ----------------
+      function makeCarousel(name, slideLabels) {
+        const track = document.getElementById(name + '-track');
+        const slides = track.children.length;
+        const prevBtn = document.querySelector(`.carousel-btn.prev[data-carousel="${name}"]`);
+        const nextBtn = document.querySelector(`.carousel-btn.next[data-carousel="${name}"]`);
+        const label = document.getElementById(name + '-label');
+        const dotsWrap = document.getElementById(name + '-dots');
+        let index = 0;
+
+        dotsWrap.innerHTML = Array.from({ length: slides }).map(() => '<span></span>').join('');
+        const dots = Array.from(dotsWrap.children);
+
+        function render() {
+          track.style.transform = `translateX(-${index * 100}%)`;
+          prevBtn.disabled = index === 0;
+          nextBtn.disabled = index === slides - 1;
+          label.textContent = slideLabels[index];
+          dots.forEach((d, i) => d.classList.toggle('active', i === index));
+        }
+        prevBtn.addEventListener('click', () => { if (index > 0) { index--; render(); } });
+        nextBtn.addEventListener('click', () => { if (index < slides - 1) { index++; render(); } });
+        render();
+      }
+      makeCarousel('insights', ['Chart 01 of 3 · Top Artists', 'Chart 02 of 3 · Yearly Hours', 'Chart 03 of 3 · Weekly Behaviour']);
+      makeCarousel('rotation', ['Top Tracks', 'Top Albums']);
+
+      // ---------------- DOWNLOAD MENUS (PNG / JPEG / PDF, per page) ----------------
+      const toast = document.getElementById('dl-toast');
+      let toastTimer = null;
+      function showToast(msg) {
+        toast.textContent = msg;
+        toast.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove('show'), 4500);
+      }
+      function triggerDownload(href, filename) {
+        const a = document.createElement('a');
+        a.href = href; a.download = filename;
+        document.body.appendChild(a); a.click(); a.remove();
+      }
+
+      document.querySelectorAll('[data-dl-toggle]').forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          const menu = document.getElementById(btn.dataset.dlToggle);
+          document.querySelectorAll('.download-menu').forEach(m => { if (m !== menu) m.classList.remove('open'); });
+          menu.classList.toggle('open');
+        });
+      });
+      document.addEventListener('click', function () { document.querySelectorAll('.download-menu').forEach(m => m.classList.remove('open')); });
+
+      document.querySelectorAll('.download-menu button[data-dl]').forEach(function (btn) {
+        btn.addEventListener('click', async function (e) {
+          e.stopPropagation();
+          const format = btn.dataset.dl;
+          const targetId = btn.dataset.target;
+          const filenameBase = btn.dataset.name;
+          const menu = btn.closest('.download-menu');
+          menu.classList.remove('open');
+
+          if (typeof html2canvas === 'undefined') {
+            showToast('Export needs a helper library loaded from the internet — reconnect and reload to use it.');
             return;
           }
-          const { jsPDF } = window.jspdf;
-          const w = canvas.width, h = canvas.height;
-          const pdf = new jsPDF({orientation: w > h ? 'landscape' : 'portrait', unit:'px', format:[w, h]});
-          pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, w, h);
-          pdf.save(filenameBase + '.pdf');
-          showToast('Saved ' + filenameBase + '.pdf');
-        }
-      } catch(err){
-        showToast('Could not render this in your browser — try a different browser, or use your OS screenshot tool instead.');
-      }
-    });
-  });
+          const target = document.getElementById(targetId);
+          showToast('Rendering "' + filenameBase.replace('bug-bytes-', '').replace('-', ' ') + '" — one moment…');
+          try {
+            const canvas = await html2canvas(target, {
+              backgroundColor: getComputedStyle(document.body).backgroundColor,
+              useCORS: true,
+              scale: Math.min(window.devicePixelRatio || 1, 2),
+            });
+            if (format === 'png') {
+              canvas.toBlob(function (blob) {
+                const url = URL.createObjectURL(blob);
+                triggerDownload(url, filenameBase + '.png');
+                URL.revokeObjectURL(url);
+                showToast('Saved ' + filenameBase + '.png');
+              });
+            } else if (format === 'jpeg') {
+              const url = canvas.toDataURL('image/jpeg', 0.92);
+              triggerDownload(url, filenameBase + '.jpg');
+              showToast('Saved ' + filenameBase + '.jpg');
+            } else if (format === 'pdf') {
+              if (!window.jspdf) {
+                showToast('PDF export needs a helper library loaded from the internet — reconnect and reload to use it.');
+                return;
+              }
+              const { jsPDF } = window.jspdf;
+              const w = canvas.width, h = canvas.height;
+              const pdf = new jsPDF({ orientation: w > h ? 'landscape' : 'portrait', unit: 'px', format: [w, h] });
+              pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, w, h);
+              pdf.save(filenameBase + '.pdf');
+              showToast('Saved ' + filenameBase + '.pdf');
+            }
+          } catch (err) {
+            showToast('Could not render this in your browser — try a different browser, or use your OS screenshot tool instead.');
+          }
+        });
+      });
 
-})();
-</script>
+    })();
+  </script>
 </body>
+
 </html>

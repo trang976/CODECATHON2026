@@ -1,31 +1,10 @@
-"""
-Precompute every number the Wrapped-style site needs, as one compact JSON file.
-No raw play-by-play rows are shipped to the browser -- only aggregates.
-
-CHANGES IN THIS VERSION
-------------------------
-- Removed the "listeners of X also played Y" recommendation block entirely
-  (the co_occurrence section). The site no longer has a recommendations page.
-- Replaced the old "total_plays >= 300" merch-unlock list with a real,
-  fixed three-tier Superfan ladder (Bronze / Silver / Gold), computed once
-  per artist from their ACTUAL total play count. Each artist's tier is a
-  fact derived from the data -- there is no user-adjustable slider on the
-  frontend anymore, which is what let people "unlock" tiers they hadn't
-  actually reached. The frontend only ever renders whatever tier this
-  script says an artist has truly earned.
-"""
-
 import json
 import hashlib
 import numpy as np
 import pandas as pd
 
-# ------------------------------------------------------------------
-# 0. CONFIG -- point this at your exported/cleaned history CSV
-# ------------------------------------------------------------------
 CSV_PATH = "spotify_history_cleaned.csv"
 
-# Superfan ladder thresholds, in total plays for a single artist.
 BRONZE_THRESHOLD = 5_000
 SILVER_THRESHOLD = 15_000
 GOLD_THRESHOLD = 30_000
@@ -36,9 +15,6 @@ df["date"] = df["ts"].dt.date
 
 TOTAL_PLAYS = len(df)
 
-# ------------------------------------------------------------------
-# 1. TOP-LINE SUMMARY
-# ------------------------------------------------------------------
 summary = {
     "total_plays": int(TOTAL_PLAYS),
     "total_hours": round(df["minutes_played"].sum() / 60, 1),
@@ -50,9 +26,7 @@ summary = {
     "years_covered": int(df["year"].nunique()),
 }
 
-# ------------------------------------------------------------------
-# 2. TOP 10 ARTISTS BY ENGAGEMENT SCORE
-# ------------------------------------------------------------------
+# TOP 10 ARTISTS BY ENGAGEMENT SCORE
 agg = df.groupby("artist_name").agg(
     total_plays=("ms_played", "count"),
     total_minutes=("minutes_played", "sum"),
@@ -85,9 +59,6 @@ top_artists = [
     for i, (_, row) in enumerate(top_artists_df.iterrows())
 ]
 
-# ------------------------------------------------------------------
-# 3. TOP 10 TRACKS / ALBUMS (by total minutes played)
-# ------------------------------------------------------------------
 track_agg = df.groupby(["track_name", "artist_name"]).agg(
     plays=("ms_played", "count"), minutes=("minutes_played", "sum")
 ).reset_index().sort_values("minutes", ascending=False).head(10)
@@ -106,16 +77,11 @@ top_albums = [
     for i, (_, r) in enumerate(album_agg.iterrows())
 ]
 
-# ------------------------------------------------------------------
-# 4. YEARLY LISTENING HOURS
-# ------------------------------------------------------------------
+# YEARLY LISTENING HOURS
 yearly = df.groupby("year")["minutes_played"].sum() / 60
 yearly_hours = [{"year": int(y), "hours": round(h, 1)} for y, h in yearly.items()]
 
-# ------------------------------------------------------------------
-# 5. USER BEHAVIOUR -- 168 hourly buckets, Monday 00:00 -> Sunday 23:00
-#    (reshaped into a 7x24 grid on the frontend for the heatmap chart)
-# ------------------------------------------------------------------
+# USER BEHAVIOUR -- 168 hourly buckets, Monday 00:00 -> Sunday 23:00
 day_order = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 play_counts = df.groupby(["day_of_week", "hour"]).size().reindex(
     pd.MultiIndex.from_product([day_order, range(24)], names=["day_of_week", "hour"]),
@@ -134,9 +100,7 @@ weekly_rhythm = {
     "day_start_index": [i * 24 for i in range(7)],
 }
 
-# ------------------------------------------------------------------
-# 6. LISTENING PERSONA (rule-based, computed from real behaviour)
-# ------------------------------------------------------------------
+# LISTENING PERSONA
 late_night_ratio = df["hour"].isin([0, 1, 2, 3, 4]).mean()
 morning_ratio = df["hour"].isin([5, 6, 7, 8, 9]).mean()
 weekend_ratio = df["day_of_week"].isin(["Saturday", "Sunday"]).mean()
@@ -188,17 +152,6 @@ persona = {
     },
 }
 
-# ------------------------------------------------------------------
-# 7. SUPERFAN ACCESS LADDER -- Bronze / Silver / Gold, fixed per artist
-#    NOTE: "streams" here = this listener's own play count per artist,
-#    used as a stand-in for a real cross-platform stream count, since
-#    this dataset is a single listener's history.
-#
-#    Each artist gets EXACTLY the tier their real play count has earned.
-#    Tiers are cumulative (Gold implies Silver implies Bronze), and each
-#    tier's reward is distinct -- there is nothing here for a frontend
-#    to "navigate around"; the tier is a fixed fact from the data.
-# ------------------------------------------------------------------
 def gen_code(artist, salt):
     """Deterministic 6-char alphanumeric code, unique per artist+salt."""
     h = hashlib.sha256(f"BUGBYTES|{artist}|{salt}".encode()).hexdigest()
@@ -264,10 +217,6 @@ for _, row in superfan_pool.iterrows():
         "tiers": tiers,
     })
 
-# ------------------------------------------------------------------
-# WRITE OUT
-# (No co_occurrence / recommendation block -- that page was removed.)
-# ------------------------------------------------------------------
 data = {
     "summary": summary,
     "top_artists": top_artists,

@@ -1,0 +1,1060 @@
+{
+  "summary": {
+    "total_plays": 148675,
+    "total_hours": 5288.7,
+    "unique_artists": 4113,
+    "unique_tracks": 13839,
+    "date_range": [
+      "2013-07-08",
+      "2024-12-15"
+    ],
+    "overall_skip_rate": 5.3
+  },
+  "top_artists": [
+    {
+      "artist_name": "The Beatles",
+      "play_count": 13530,
+      "total_hours": 333.13,
+      "engagement_score": 89.41,
+      "completion_rate": 0.48,
+      "skip_rate": 0.03,
+      "verified_streams": 7735,
+      "tier": "Gold",
+      "perks": [
+        "Early access to new releases",
+        "Discount code for merch",
+        "Presale concert tickets"
+      ]
+    },
+    {
+      "artist_name": "The Killers",
+      "play_count": 6748,
+      "total_hours": 286.77,
+      "engagement_score": 72.02,
+      "completion_rate": 0.58,
+      "skip_rate": 0.03,
+      "verified_streams": 4596,
+      "tier": "Silver",
+      "perks": [
+        "Early access to new releases",
+        "Discount code for merch"
+      ]
+    },
+    {
+      "artist_name": "John Mayer",
+      "play_count": 4797,
+      "total_hours": 197.74,
+      "engagement_score": 58.72,
+      "completion_rate": 0.55,
+      "skip_rate": 0.03,
+      "verified_streams": 3082,
+      "tier": "Silver",
+      "perks": [
+        "Early access to new releases",
+        "Discount code for merch"
+      ]
+    },
+    {
+      "artist_name": "Bob Dylan",
+      "play_count": 3790,
+      "total_hours": 156.24,
+      "engagement_score": 45.76,
+      "completion_rate": 0.47,
+      "skip_rate": 0.04,
+      "verified_streams": 2224,
+      "tier": "Silver",
+      "perks": [
+        "Early access to new releases",
+        "Discount code for merch"
+      ]
+    },
+    {
+      "artist_name": "Howard Shore",
+      "play_count": 1445,
+      "total_hours": 96.89,
+      "engagement_score": 40.25,
+      "completion_rate": 0.72,
+      "skip_rate": 0.03,
+      "verified_streams": 1174,
+      "tier": "Silver",
+      "perks": [
+        "Early access to new releases",
+        "Discount code for merch"
+      ]
+    },
+    {
+      "artist_name": "Paul McCartney",
+      "play_count": 2685,
+      "total_hours": 98.57,
+      "engagement_score": 39.4,
+      "completion_rate": 0.55,
+      "skip_rate": 0.04,
+      "verified_streams": 1749,
+      "tier": "Silver",
+      "perks": [
+        "Early access to new releases",
+        "Discount code for merch"
+      ]
+    },
+    {
+      "artist_name": "The Strokes",
+      "play_count": 1784,
+      "total_hours": 85.84,
+      "engagement_score": 36.6,
+      "completion_rate": 0.64,
+      "skip_rate": 0.02,
+      "verified_streams": 1312,
+      "tier": "Silver",
+      "perks": [
+        "Early access to new releases",
+        "Discount code for merch"
+      ]
+    },
+    {
+      "artist_name": "Joaqu\u00edn Sabina",
+      "play_count": 794,
+      "total_hours": 54.37,
+      "engagement_score": 34.07,
+      "completion_rate": 0.76,
+      "skip_rate": 0.07,
+      "verified_streams": 704,
+      "tier": "Bronze",
+      "perks": [
+        "Early access to new releases"
+      ]
+    },
+    {
+      "artist_name": "The Rolling Stones",
+      "play_count": 2367,
+      "total_hours": 84.08,
+      "engagement_score": 33.77,
+      "completion_rate": 0.44,
+      "skip_rate": 0.05,
+      "verified_streams": 1368,
+      "tier": "Silver",
+      "perks": [
+        "Early access to new releases",
+        "Discount code for merch"
+      ]
+    },
+    {
+      "artist_name": "Ennio Morricone",
+      "play_count": 981,
+      "total_hours": 35.96,
+      "engagement_score": 32.61,
+      "completion_rate": 0.79,
+      "skip_rate": 0.02,
+      "verified_streams": 828,
+      "tier": "Bronze",
+      "perks": [
+        "Early access to new releases"
+      ]
+    },
+    {
+      "artist_name": "ABBA",
+      "play_count": 340,
+      "total_hours": 17.3,
+      "engagement_score": 32.34,
+      "completion_rate": 0.76,
+      "skip_rate": 0.11,
+      "verified_streams": 298,
+      "tier": "Bronze",
+      "perks": [
+        "Early access to new releases"
+      ]
+    },
+    {
+      "artist_name": "Kings of Leon",
+      "play_count": 1381,
+      "total_hours": 60.7,
+      "engagement_score": 31.97,
+      "completion_rate": 0.58,
+      "skip_rate": 0.02,
+      "verified_streams": 951,
+      "tier": "Bronze",
+      "perks": [
+        "Early access to new releases"
+      ]
+    },
+    {
+      "artist_name": "Pink Floyd",
+      "play_count": 2079,
+      "total_hours": 71.3,
+      "engagement_score": 31.92,
+      "completion_rate": 0.47,
+      "skip_rate": 0.03,
+      "verified_streams": 1188,
+      "tier": "Silver",
+      "perks": [
+        "Early access to new releases",
+        "Discount code for merch"
+      ]
+    },
+    {
+      "artist_name": "Jorge Drexler",
+      "play_count": 496,
+      "total_hours": 25.24,
+      "engagement_score": 31.56,
+      "completion_rate": 0.86,
+      "skip_rate": 0.04,
+      "verified_streams": 454,
+      "tier": "Bronze",
+      "perks": [
+        "Early access to new releases"
+      ]
+    },
+    {
+      "artist_name": "Johnny Cash",
+      "play_count": 2467,
+      "total_hours": 66.1,
+      "engagement_score": 31.49,
+      "completion_rate": 0.43,
+      "skip_rate": 0.03,
+      "verified_streams": 1493,
+      "tier": "Silver",
+      "perks": [
+        "Early access to new releases",
+        "Discount code for merch"
+      ]
+    },
+    {
+      "artist_name": "Imagine Dragons",
+      "play_count": 2107,
+      "total_hours": 66.83,
+      "engagement_score": 31.39,
+      "completion_rate": 0.47,
+      "skip_rate": 0.06,
+      "verified_streams": 1182,
+      "tier": "Silver",
+      "perks": [
+        "Early access to new releases",
+        "Discount code for merch"
+      ]
+    },
+    {
+      "artist_name": "Billy Joel",
+      "play_count": 1251,
+      "total_hours": 49.37,
+      "engagement_score": 30.56,
+      "completion_rate": 0.54,
+      "skip_rate": 0.02,
+      "verified_streams": 823,
+      "tier": "Bronze",
+      "perks": [
+        "Early access to new releases"
+      ]
+    },
+    {
+      "artist_name": "Boyce Avenue",
+      "play_count": 32,
+      "total_hours": 2.09,
+      "engagement_score": 30.28,
+      "completion_rate": 1.0,
+      "skip_rate": 0.0,
+      "verified_streams": 32,
+      "tier": "Listener",
+      "perks": []
+    },
+    {
+      "artist_name": "Miranda!",
+      "play_count": 16,
+      "total_hours": 0.88,
+      "engagement_score": 30.23,
+      "completion_rate": 1.0,
+      "skip_rate": 0.0,
+      "verified_streams": 16,
+      "tier": "Listener",
+      "perks": []
+    },
+    {
+      "artist_name": "Rubytates",
+      "play_count": 13,
+      "total_hours": 0.74,
+      "engagement_score": 30.19,
+      "completion_rate": 1.0,
+      "skip_rate": 0.0,
+      "verified_streams": 13,
+      "tier": "Listener",
+      "perks": []
+    }
+  ],
+  "top_tracks": [
+    {
+      "track_name": "Ode To The Mets",
+      "artist_name": "The Strokes",
+      "play_count": 203,
+      "hours": 18.34
+    },
+    {
+      "track_name": "The Return of the King (feat. Sir James Galway, Viggo Mortensen and Renee Fleming)",
+      "artist_name": "Howard Shore",
+      "play_count": 120,
+      "hours": 17.89
+    },
+    {
+      "track_name": "The Fellowship Reunited (feat. Sir James Galway, Viggo Mortensen and Ren\u00e9e Fleming)",
+      "artist_name": "Howard Shore",
+      "play_count": 78,
+      "hours": 12.43
+    },
+    {
+      "track_name": "19 Dias y 500 Noches - En Directo",
+      "artist_name": "Joaqu\u00edn Sabina",
+      "play_count": 146,
+      "hours": 11.77
+    },
+    {
+      "track_name": "In the Blood",
+      "artist_name": "John Mayer",
+      "play_count": 180,
+      "hours": 10.61
+    },
+    {
+      "track_name": "Claudia's Theme - Version Eight",
+      "artist_name": "Lennie Niehaus",
+      "play_count": 123,
+      "hours": 10.31
+    },
+    {
+      "track_name": "Dying Breed",
+      "artist_name": "The Killers",
+      "play_count": 166,
+      "hours": 10.05
+    },
+    {
+      "track_name": "The Breaking of the Fellowship (feat. \"In Dreams\")",
+      "artist_name": "Howard Shore",
+      "play_count": 93,
+      "hours": 10.0
+    },
+    {
+      "track_name": "The Road Goes Ever On..., Pt. 1",
+      "artist_name": "Howard Shore",
+      "play_count": 120,
+      "hours": 9.79
+    },
+    {
+      "track_name": "All These Things That I've Done",
+      "artist_name": "The Killers",
+      "play_count": 136,
+      "hours": 9.51
+    },
+    {
+      "track_name": "Caution",
+      "artist_name": "The Killers",
+      "play_count": 155,
+      "hours": 9.32
+    },
+    {
+      "track_name": "Epilogue",
+      "artist_name": "Justin Hurwitz",
+      "play_count": 101,
+      "hours": 8.82
+    },
+    {
+      "track_name": "I Guess I Just Feel Like",
+      "artist_name": "John Mayer",
+      "play_count": 127,
+      "hours": 8.32
+    },
+    {
+      "track_name": "The Journey to the Grey Havens (feat. Sir James Galway)",
+      "artist_name": "Howard Shore",
+      "play_count": 81,
+      "hours": 8.18
+    },
+    {
+      "track_name": "Visions of Johanna",
+      "artist_name": "Bob Dylan",
+      "play_count": 90,
+      "hours": 8.1
+    },
+    {
+      "track_name": "100,000 People",
+      "artist_name": "Kings of Leon",
+      "play_count": 98,
+      "hours": 7.87
+    },
+    {
+      "track_name": "Imploding The Mirage",
+      "artist_name": "The Killers",
+      "play_count": 123,
+      "hours": 7.79
+    },
+    {
+      "track_name": "Did My Best",
+      "artist_name": "The Voidz",
+      "play_count": 108,
+      "hours": 7.73
+    },
+    {
+      "track_name": "Lily, Rosemary and the Jack of Hearts",
+      "artist_name": "Bob Dylan",
+      "play_count": 90,
+      "hours": 7.59
+    },
+    {
+      "track_name": "Sweet Virginia",
+      "artist_name": "The Rolling Stones",
+      "play_count": 125,
+      "hours": 7.54
+    }
+  ],
+  "top_albums": [
+    {
+      "album_name": "The Beatles",
+      "artist_name": "The Beatles",
+      "play_count": 2050,
+      "hours": 51.45
+    },
+    {
+      "album_name": "The New Abnormal",
+      "artist_name": "The Strokes",
+      "play_count": 719,
+      "hours": 49.78
+    },
+    {
+      "album_name": "Imploding The Mirage",
+      "artist_name": "The Killers",
+      "play_count": 777,
+      "hours": 44.42
+    },
+    {
+      "album_name": "Abbey Road",
+      "artist_name": "The Beatles",
+      "play_count": 1421,
+      "hours": 41.13
+    },
+    {
+      "album_name": "Blood On The Tracks",
+      "artist_name": "Bob Dylan",
+      "play_count": 738,
+      "hours": 40.21
+    },
+    {
+      "album_name": "Past Masters",
+      "artist_name": "The Beatles",
+      "play_count": 1667,
+      "hours": 40.17
+    },
+    {
+      "album_name": "Hot Fuss",
+      "artist_name": "The Killers",
+      "play_count": 857,
+      "hours": 38.95
+    },
+    {
+      "album_name": "The Wall",
+      "artist_name": "Pink Floyd",
+      "play_count": 1217,
+      "hours": 38.31
+    },
+    {
+      "album_name": "Pressure Machine",
+      "artist_name": "The Killers",
+      "play_count": 561,
+      "hours": 31.48
+    },
+    {
+      "album_name": "Where the Light Is: John Mayer Live In Los Angeles",
+      "artist_name": "John Mayer",
+      "play_count": 867,
+      "hours": 31.08
+    },
+    {
+      "album_name": "Sam's Town",
+      "artist_name": "The Killers",
+      "play_count": 794,
+      "hours": 30.18
+    },
+    {
+      "album_name": "Born and Raised",
+      "artist_name": "John Mayer",
+      "play_count": 752,
+      "hours": 29.86
+    },
+    {
+      "album_name": "Exile On Main Street",
+      "artist_name": "The Rolling Stones",
+      "play_count": 884,
+      "hours": 29.8
+    },
+    {
+      "album_name": "Band On The Run",
+      "artist_name": "Paul McCartney",
+      "play_count": 509,
+      "hours": 27.99
+    },
+    {
+      "album_name": "The Search for Everything",
+      "artist_name": "John Mayer",
+      "play_count": 691,
+      "hours": 27.81
+    }
+  ],
+  "hourly_hours": [
+    363.25,
+    319.78,
+    288.97,
+    275.94,
+    233.89,
+    228.83,
+    224.02,
+    141.68,
+    83.02,
+    57.59,
+    41.57,
+    29.58,
+    29.25,
+    62.68,
+    111.32,
+    150.26,
+    266.42,
+    375.43,
+    375.26,
+    348.82,
+    358.43,
+    303.44,
+    277.3,
+    342.01
+  ],
+  "daily_hours": {
+    "Monday": 755.14,
+    "Tuesday": 761.35,
+    "Wednesday": 809.45,
+    "Thursday": 784.01,
+    "Friday": 875.53,
+    "Saturday": 649.51,
+    "Sunday": 653.74
+  },
+  "monthly_hours": [
+    {
+      "label": "2013-07",
+      "hours": 3.81
+    },
+    {
+      "label": "2013-08",
+      "hours": 2.32
+    },
+    {
+      "label": "2013-09",
+      "hours": 1.71
+    },
+    {
+      "label": "2014-01",
+      "hours": 1.04
+    },
+    {
+      "label": "2015-01",
+      "hours": 0.55
+    },
+    {
+      "label": "2015-06",
+      "hours": 4.76
+    },
+    {
+      "label": "2015-07",
+      "hours": 0.58
+    },
+    {
+      "label": "2015-08",
+      "hours": 21.28
+    },
+    {
+      "label": "2015-09",
+      "hours": 13.84
+    },
+    {
+      "label": "2015-10",
+      "hours": 16.48
+    },
+    {
+      "label": "2015-11",
+      "hours": 1.23
+    },
+    {
+      "label": "2015-12",
+      "hours": 0.54
+    },
+    {
+      "label": "2016-01",
+      "hours": 0.0
+    },
+    {
+      "label": "2016-02",
+      "hours": 0.0
+    },
+    {
+      "label": "2016-05",
+      "hours": 0.0
+    },
+    {
+      "label": "2016-06",
+      "hours": 27.95
+    },
+    {
+      "label": "2016-07",
+      "hours": 21.91
+    },
+    {
+      "label": "2016-08",
+      "hours": 43.19
+    },
+    {
+      "label": "2016-09",
+      "hours": 17.26
+    },
+    {
+      "label": "2016-10",
+      "hours": 12.83
+    },
+    {
+      "label": "2016-11",
+      "hours": 17.04
+    },
+    {
+      "label": "2016-12",
+      "hours": 56.78
+    },
+    {
+      "label": "2017-01",
+      "hours": 43.41
+    },
+    {
+      "label": "2017-02",
+      "hours": 19.87
+    },
+    {
+      "label": "2017-03",
+      "hours": 58.24
+    },
+    {
+      "label": "2017-04",
+      "hours": 66.88
+    },
+    {
+      "label": "2017-05",
+      "hours": 61.96
+    },
+    {
+      "label": "2017-06",
+      "hours": 47.45
+    },
+    {
+      "label": "2017-07",
+      "hours": 72.19
+    },
+    {
+      "label": "2017-08",
+      "hours": 53.4
+    },
+    {
+      "label": "2017-09",
+      "hours": 62.21
+    },
+    {
+      "label": "2017-10",
+      "hours": 66.19
+    },
+    {
+      "label": "2017-11",
+      "hours": 60.72
+    },
+    {
+      "label": "2017-12",
+      "hours": 56.33
+    },
+    {
+      "label": "2018-01",
+      "hours": 40.99
+    },
+    {
+      "label": "2018-02",
+      "hours": 37.55
+    },
+    {
+      "label": "2018-03",
+      "hours": 28.13
+    },
+    {
+      "label": "2018-04",
+      "hours": 35.05
+    },
+    {
+      "label": "2018-05",
+      "hours": 47.53
+    },
+    {
+      "label": "2018-06",
+      "hours": 39.51
+    },
+    {
+      "label": "2018-07",
+      "hours": 30.35
+    },
+    {
+      "label": "2018-08",
+      "hours": 33.21
+    },
+    {
+      "label": "2018-09",
+      "hours": 57.05
+    },
+    {
+      "label": "2018-10",
+      "hours": 32.37
+    },
+    {
+      "label": "2018-11",
+      "hours": 56.75
+    },
+    {
+      "label": "2018-12",
+      "hours": 35.55
+    },
+    {
+      "label": "2019-01",
+      "hours": 15.69
+    },
+    {
+      "label": "2019-02",
+      "hours": 14.63
+    },
+    {
+      "label": "2019-03",
+      "hours": 24.62
+    },
+    {
+      "label": "2019-04",
+      "hours": 41.56
+    },
+    {
+      "label": "2019-05",
+      "hours": 8.93
+    },
+    {
+      "label": "2019-06",
+      "hours": 29.94
+    },
+    {
+      "label": "2019-07",
+      "hours": 71.28
+    },
+    {
+      "label": "2019-08",
+      "hours": 63.6
+    },
+    {
+      "label": "2019-09",
+      "hours": 50.37
+    },
+    {
+      "label": "2019-10",
+      "hours": 65.96
+    },
+    {
+      "label": "2019-11",
+      "hours": 53.76
+    },
+    {
+      "label": "2019-12",
+      "hours": 38.81
+    },
+    {
+      "label": "2020-01",
+      "hours": 32.55
+    },
+    {
+      "label": "2020-02",
+      "hours": 26.32
+    },
+    {
+      "label": "2020-03",
+      "hours": 55.52
+    },
+    {
+      "label": "2020-04",
+      "hours": 95.96
+    },
+    {
+      "label": "2020-05",
+      "hours": 53.95
+    },
+    {
+      "label": "2020-06",
+      "hours": 59.19
+    },
+    {
+      "label": "2020-07",
+      "hours": 28.36
+    },
+    {
+      "label": "2020-08",
+      "hours": 101.78
+    },
+    {
+      "label": "2020-09",
+      "hours": 98.49
+    },
+    {
+      "label": "2020-10",
+      "hours": 114.84
+    },
+    {
+      "label": "2020-11",
+      "hours": 114.26
+    },
+    {
+      "label": "2020-12",
+      "hours": 90.17
+    },
+    {
+      "label": "2021-01",
+      "hours": 113.04
+    },
+    {
+      "label": "2021-02",
+      "hours": 81.97
+    },
+    {
+      "label": "2021-03",
+      "hours": 71.81
+    },
+    {
+      "label": "2021-04",
+      "hours": 76.28
+    },
+    {
+      "label": "2021-05",
+      "hours": 65.39
+    },
+    {
+      "label": "2021-06",
+      "hours": 88.12
+    },
+    {
+      "label": "2021-07",
+      "hours": 37.82
+    },
+    {
+      "label": "2021-08",
+      "hours": 77.66
+    },
+    {
+      "label": "2021-09",
+      "hours": 92.91
+    },
+    {
+      "label": "2021-10",
+      "hours": 71.68
+    },
+    {
+      "label": "2021-11",
+      "hours": 42.6
+    },
+    {
+      "label": "2021-12",
+      "hours": 72.21
+    },
+    {
+      "label": "2022-01",
+      "hours": 47.86
+    },
+    {
+      "label": "2022-02",
+      "hours": 83.24
+    },
+    {
+      "label": "2022-03",
+      "hours": 64.3
+    },
+    {
+      "label": "2022-04",
+      "hours": 31.8
+    },
+    {
+      "label": "2022-05",
+      "hours": 37.95
+    },
+    {
+      "label": "2022-06",
+      "hours": 74.32
+    },
+    {
+      "label": "2022-07",
+      "hours": 65.2
+    },
+    {
+      "label": "2022-08",
+      "hours": 21.96
+    },
+    {
+      "label": "2022-09",
+      "hours": 60.82
+    },
+    {
+      "label": "2022-10",
+      "hours": 73.93
+    },
+    {
+      "label": "2022-11",
+      "hours": 43.75
+    },
+    {
+      "label": "2022-12",
+      "hours": 35.82
+    },
+    {
+      "label": "2023-01",
+      "hours": 48.97
+    },
+    {
+      "label": "2023-02",
+      "hours": 43.9
+    },
+    {
+      "label": "2023-03",
+      "hours": 56.03
+    },
+    {
+      "label": "2023-04",
+      "hours": 47.38
+    },
+    {
+      "label": "2023-05",
+      "hours": 51.3
+    },
+    {
+      "label": "2023-06",
+      "hours": 26.8
+    },
+    {
+      "label": "2023-07",
+      "hours": 43.29
+    },
+    {
+      "label": "2023-08",
+      "hours": 44.24
+    },
+    {
+      "label": "2023-09",
+      "hours": 34.03
+    },
+    {
+      "label": "2023-10",
+      "hours": 40.96
+    },
+    {
+      "label": "2023-11",
+      "hours": 40.59
+    },
+    {
+      "label": "2023-12",
+      "hours": 37.58
+    },
+    {
+      "label": "2024-01",
+      "hours": 79.95
+    },
+    {
+      "label": "2024-02",
+      "hours": 53.63
+    },
+    {
+      "label": "2024-03",
+      "hours": 41.69
+    },
+    {
+      "label": "2024-04",
+      "hours": 29.47
+    },
+    {
+      "label": "2024-05",
+      "hours": 25.27
+    },
+    {
+      "label": "2024-06",
+      "hours": 28.86
+    },
+    {
+      "label": "2024-07",
+      "hours": 14.74
+    },
+    {
+      "label": "2024-08",
+      "hours": 44.72
+    },
+    {
+      "label": "2024-09",
+      "hours": 46.42
+    },
+    {
+      "label": "2024-10",
+      "hours": 60.71
+    },
+    {
+      "label": "2024-11",
+      "hours": 53.87
+    },
+    {
+      "label": "2024-12",
+      "hours": 3.36
+    }
+  ],
+  "yearly_hours": [
+    {
+      "year": 2013,
+      "hours": 7.8
+    },
+    {
+      "year": 2014,
+      "hours": 1.0
+    },
+    {
+      "year": 2015,
+      "hours": 59.2
+    },
+    {
+      "year": 2016,
+      "hours": 197.0
+    },
+    {
+      "year": 2017,
+      "hours": 668.9
+    },
+    {
+      "year": 2018,
+      "hours": 474.0
+    },
+    {
+      "year": 2019,
+      "hours": 479.2
+    },
+    {
+      "year": 2020,
+      "hours": 871.4
+    },
+    {
+      "year": 2021,
+      "hours": 891.5
+    },
+    {
+      "year": 2022,
+      "hours": 641.0
+    },
+    {
+      "year": 2023,
+      "hours": 515.1
+    },
+    {
+      "year": 2024,
+      "hours": 482.7
+    }
+  ],
+  "tier_distribution": {
+    "Listener": 3968,
+    "Bronze": 132,
+    "Silver": 12,
+    "Gold": 1
+  }
+}
