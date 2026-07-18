@@ -7,7 +7,7 @@ import json
 import numpy as np
 import pandas as pd
 
-df = pd.read_csv("/mnt/user-data/outputs/spotify_history_cleaned.csv")
+df = pd.read_csv("/mnt/user-data/outputs/spotify_history_clean.csv")
 df["ts"] = pd.to_datetime(df["ts"])
 df["date"] = df["ts"].dt.date
 
